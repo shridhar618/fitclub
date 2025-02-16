@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitClub - Your Fitness Journey</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/chart.js" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/fitness.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h1>Fit<span>Club</span></h1>
+            </div>
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="./index.html" class="nav-link active">
+                        <i class="ri-home-4-line"></i>
+                        <span>Home</span>
+                    </a></li>
+                    <li><a href="#programs" class="nav-link">
+                        <i class="ri-calendar-todo-line"></i>
+                        <span>Programs</span>
+                    </a></li>
+                    <li><a href="#dashboard" class="nav-link">
+                        <i class="ri-dashboard-line"></i>
+                        <span>Dashboard</span>
+                    </a></li>
+                    <li><a href="#nutrition" class="nav-link">
+                        <i class="ri-restaurant-line"></i>
+                        <span>Nutrition</span>
+                    </a></li>
+                    <li><a href="#contact" class="nav-link">
+                        <i class="ri-customer-service-2-line"></i>
+                        <span>Contact</span>
+                    </a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="ri-contrast-2-line"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Transform Your Body,<br>Transform Your Life</h1>
+                <p class="hero-text">Start your fitness journey today with personalized workouts, nutrition tracking, and expert guidance.</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <p class="stat-text">Active Members</p>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <p class="stat-text">Expert Trainers</p>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100+</span>
+                        <p class="stat-text">Programs</p>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#dashboard" class="btn btn-primary">Get Started</a>
+                    <a href="#programs" class="btn btn-outline">View Programs</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="./images/hero-image.jpg" alt="Fitness Training">
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard">
+        <!-- User Profile Card -->
+        <div class="dashboard-card">
+            <div id="editProfileModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Edit Profile</h3>
+                    <form id="editProfileForm">
+                        <div class="form-group">
+                            <label for="editAge">Age:</label>
+                            <input type="number" id="editAge" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editWeight">Weight (kg):</label>
+                            <input type="number" id="editWeight" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHeight">Height (cm):</label>
+                            <input type="number" id="editHeight" required>
+                        </div>
+                        <button type="submit" class="btn">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+            <h3>My Profile</h3>
+            <div class="profile-info">
+                <p>Age: <span id="userAge">28</span></p>
+                <p>Weight: <span id="userWeight">75</span> kg</p>
+                <p>Height: <span id="userHeight">175</span> cm</p>
+                <p>BMI: <span id="userBMI">24.5</span></p>
+                <button class="btn" onclick="editProfile()">Edit Profile</button>
+            </div>
+        </div>
+
+        <!-- Activity Tracking -->
+        <div class="dashboard-card">
+            <h3>Today's Activity</h3>
+            <div class="activity-stats">
+                <div class="stat">
+                    <i class="ri-footprint-line"></i>
+                    <span id="stepCount">8,432</span>
+                    <p>Steps</p>
+                </div>
+                <div class="stat">
+                    <i class="ri-route-line"></i>
+                    <span id="distance">5.2</span>
+                    <p>km</p>
+                </div>
+                <div class="stat">
+                    <i class="ri-fire-line"></i>
+                    <span id="calories">420</span>
+                    <p>kcal</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Section -->
+        <div class="dashboard-card">
+            <h3>Fitness Goals</h3>
+            <div class="goals-form">
+                <input type="text" id="goalTitle" placeholder="Goal Title" required>
+                <input type="text" id="goalTarget" placeholder="Target" required>
+                <input type="date" id="goalDeadline" required>
+                <button onclick="addNewGoal()" class="btn">Add Goal</button>
+            </div>
+            <div id="goalsContainer" class="goals-list">
+                <!-- Goals will be added here -->
+            </div>
+        </div>
+
+        <!-- Exercise Log -->
+        <div class="dashboard-card">
+            <h3>Exercise Log</h3>
+            <div class="exercise-log">
+                <button class="btn" onclick="logExercise()">Log New Exercise</button>
+                <div class="log-entries">
+                    <!-- Exercise entries will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Tracking -->
+        <div class="dashboard-card">
+            <h3>Nutrition Tracker</h3>
+            <div class="nutrition-tracker">
+                <div class="meal-card">
+                    <h4>Breakfast</h4>
+                    <p>Calories: <span id="breakfastCal">320</span></p>
+                    <button class="btn" onclick="logMeal('breakfast')">Add Food</button>
+                </div>
+                <div class="meal-card">
+                    <h4>Lunch</h4>
+                    <p>Calories: <span id="lunchCal">520</span></p>
+                    <button class="btn" onclick="logMeal('lunch')">Add Food</button>
+                </div>
+                <div class="meal-card">
+                    <h4>Dinner</h4>
+                    <p>Calories: <span id="dinnerCal">480</span></p>
+                    <button class="btn" onclick="logMeal('dinner')">Add Food</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Intake -->
+        <div class="dashboard-card">
+            <h3>Water Intake</h3>
+            <div class="water-tracker">
+                <p><span id="waterAmount">1.2</span>/2.5 L</p>
+                <div class="water-progress">
+                    <div class="water-fill" style="width: 48%"></div>
+                </div>
+                <button class="btn" onclick="addWater()">Add Water</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/fitness.js"></script>
+</body>
+</html>

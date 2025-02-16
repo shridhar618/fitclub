@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitClub - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            <!-- Logo Section -->
+            <div class="logo">
+                <h1>Fit<span>Club</span></h1>
+                <p>Welcome back to your fitness journey</p>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-container">
+                <!-- Login Form -->
+                <form id="loginForm" class="login-form">
+                    <h2>Login</h2>
+                    <p class="form-subtitle">Sign in to your account</p>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input">
+                            <input type="password" id="password" required>
+                            <i class="ri-eye-line toggle-password"></i>
+                        </div>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="./auth/forgot-password.html">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+
+                    <button type="button" class="btn btn-google" id="googleSignIn">
+                        <i class="ri-google-fill"></i>
+                        <span>Sign in with Google</span>
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    Don't have an account? <a href="./auth/signup.html">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script src="./js/login.js"></script>
+</body>
+</html>

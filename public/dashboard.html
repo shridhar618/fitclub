@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitClub - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: #2ecc71;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #666;
+        }
+
+        .profile-info h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: #666;
+        }
+
+        /* Profile Details */
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .detail-card {
+            background: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .detail-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .detail-card p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            background: #27ae60;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .welcome-banner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-banner p {
+            opacity: 0.9;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .notes-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .note-card {
+            background: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #2ecc71;
+            position: relative;
+        }
+
+        .note-card .date {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-card .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Add Note Form */
+        .add-note-form {
+            margin-bottom: 2rem;
+        }
+
+        .add-note-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .add-note-form textarea:focus {
+            outline: none;
+            border-color: #2ecc71;
+        }
+
+        .add-note-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .add-note-btn:hover {
+            background: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">FitClub</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#" id="logoutBtn" class="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="welcome-banner">
+            <h2>Welcome, <span id="welcomeName">User</span>! 👋</h2>
+            <p>Track your fitness goals and stay motivated</p>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-pic">👤</div>
+                <div class="profile-info">
+                    <h1 id="userName">Loading...</h1>
+                    <p id="userEmail">Loading...</p>
+                    <button class="edit-btn" style="margin-top: 1rem;">Edit Profile</button>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-card">
+                    <h3>Account Information</h3>
+                    <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
+                    <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+                    <p><strong>Member Since:</strong> <span id="memberSince">Loading...</span></p>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Fitness Goals</h3>
+                    <p>Set your fitness goals and track your progress</p>
+                    <button class="edit-btn" style="margin-top: 1rem;">Update Goals</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notes-section">
+            <div class="notes-header">
+                <h3>My Fitness Goals & Notes</h3>
+            </div>
+
+            <div class="add-note-form">
+                <textarea id="noteInput" placeholder="Write your fitness goal or note here..."></textarea>
+                <button class="add-note-btn" onclick="addNote()">Add Note</button>
+            </div>
+
+            <div class="notes-list" id="notesList">
+                <!-- Notes will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get user data from localStorage
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            
+            if (!userData) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Update welcome message and profile information
+            document.getElementById('welcomeName').textContent = userData.name;
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('profileName').textContent = userData.name;
+            document.getElementById('profileEmail').textContent = userData.email;
+            
+            // Format and display member since date
+            const memberDate = new Date(userData.created_at).toLocaleDateString();
+            document.getElementById('memberSince').textContent = memberDate;
+
+            // Load existing notes
+            loadNotes();
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('userData');
+                localStorage.removeItem('userNotes');
+                window.location.href = '/login';
+            });
+        });
+
+        function addNote() {
+            const noteInput = document.getElementById('noteInput');
+            const noteText = noteInput.value.trim();
+            
+            if (!noteText) return;
+
+            const note = {
+                id: Date.now(),
+                text: noteText,
+                date: new Date().toISOString()
+            };
+
+            // Get existing notes
+            const notes = JSON.parse(localStorage.getItem('userNotes') || '[]');
+            notes.unshift(note); // Add new note at the beginning
+            
+            // Save updated notes
+            localStorage.setItem('userNotes', JSON.stringify(notes));
+            
+            // Clear input
+            noteInput.value = '';
+            
+            // Reload notes display
+            loadNotes();
+        }
+
+        function deleteNote(noteId) {
+            const notes = JSON.parse(localStorage.getItem('userNotes') || '[]');
+            const updatedNotes = notes.filter(note => note.id !== noteId);
+            localStorage.setItem('userNotes', JSON.stringify(updatedNotes));
+            loadNotes();
+        }
+
+        function loadNotes() {
+            const notesList = document.getElementById('notesList');
+            const notes = JSON.parse(localStorage.getItem('userNotes') || '[]');
+            
+            notesList.innerHTML = notes.map(note => `
+                <div class="note-card">
+                    <button class="delete-btn" onclick="deleteNote(${note.id})">×</button>
+                    <div class="date">${new Date(note.date).toLocaleDateString()}</div>
+                    <p>${note.text}</p>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
