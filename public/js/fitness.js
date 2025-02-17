@@ -130,53 +130,150 @@ window.myChart = new Chart(ctx, {
 // Update chart colors when theme changes
 themeToggle.addEventListener('click', updateChartColors);
 
-// Edit Profile function
+// Simple profile management without class
+let currentUser = null;
+
+// Check login status when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    checkLoginStatus();
+    
+    // Add submit event listener to the form
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', updateProfile);
+    }
+});
+
+function checkLoginStatus() {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+        currentUser = JSON.parse(userData);
+        loadUserProfile();
+    }
+}
+
+function loadUserProfile() {
+    const profileData = localStorage.getItem(`profile_${currentUser.id}`);
+    if (profileData) {
+        const data = JSON.parse(profileData);
+        updateProfileUI(data);
+    }
+}
+
+// Simple function to open the modal when edit button is clicked
 function editProfile() {
+    const modal = document.getElementById('profileModal');
+    const form = document.getElementById('profileForm');
+    
     // Pre-fill the form with current values
-    document.getElementById('editAge').value = document.getElementById('userAge').textContent;
-    document.getElementById('editWeight').value = document.getElementById('userWeight').textContent;
-    document.getElementById('editHeight').value = document.getElementById('userHeight').textContent;
+    form.userName.value = document.querySelector('.profile-summary h3').textContent.trim();
+    form.userAge.value = document.getElementById('userAge').textContent.trim();
+    form.userWeight.value = document.getElementById('userWeight').textContent.replace('kg', '').trim();
+    form.userHeight.value = document.getElementById('userHeight').textContent.replace('cm', '').trim();
+    
+    // Set current profile image in preview
+    const currentProfileImage = document.querySelector('.profile-image').src;
+    document.getElementById('imagePreview').src = currentProfileImage;
     
     // Show the modal
     modal.style.display = 'block';
 }
 
-// Close modal when clicking (X)
-closeBtn.onclick = function() {
+// Function to preview image before upload
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            sessionStorage.setItem('tempProfileImage', e.target.result);
+        }
+        
+        reader.readAsDataURL(file);
+    }
+}
+
+// Function to handle form submission
+function updateProfile(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    
+    // Update profile information
+    document.querySelector('.profile-summary h3').textContent = form.userName.value;
+    document.getElementById('userAge').textContent = form.userAge.value;
+    document.getElementById('userWeight').textContent = `${form.userWeight.value} kg`;
+    document.getElementById('userHeight').textContent = `${form.userHeight.value} cm`;
+    
+    // Calculate and update BMI
+    const weight = parseFloat(form.userWeight.value);
+    const height = parseFloat(form.userHeight.value);
+    const bmi = (weight / ((height/100) * (height/100))).toFixed(1);
+    document.getElementById('userBMI').textContent = bmi;
+    
+    // Update profile image if a new one was selected
+    const newProfileImage = sessionStorage.getItem('tempProfileImage');
+    if (newProfileImage) {
+        document.querySelector('.profile-image').src = newProfileImage;
+        sessionStorage.removeItem('tempProfileImage');
+    }
+    
+    // Close the modal
+    closeProfileModal();
+}
+
+// Function to close the modal
+function closeProfileModal() {
+    const modal = document.getElementById('profileModal');
     modal.style.display = 'none';
 }
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = 'none';
+    const modal = document.getElementById('profileModal');
+    if (event.target === modal) {
+        closeProfileModal();
     }
 }
 
-// Handle form submission
-editProfileForm.onsubmit = function(e) {
-    e.preventDefault();
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
 
-    // Get new values
-    const newAge = document.getElementById('editAge').value;
-    const newWeight = document.getElementById('editWeight').value;
-    const newHeight = document.getElementById('editHeight').value;
+// Login Management
+function handleLogin(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
 
-    // Update the profile information
-    document.getElementById('userAge').textContent = newAge;
-    document.getElementById('userWeight').textContent = newWeight;
-    document.getElementById('userHeight').textContent = newHeight;
+    // Mock user login
+    const mockUser = {
+        id: '123',
+        email: email,
+        name: 'User'
+    };
 
-    // Calculate and update BMI
-    const heightInMeters = newHeight / 100;
-    const bmi = (newWeight / (heightInMeters * heightInMeters)).toFixed(1);
-    document.getElementById('userBMI').textContent = bmi;
+    localStorage.setItem('currentUser', JSON.stringify(mockUser));
+    currentUser = mockUser;
+    
+    closeLoginModal();
+    showNotification('Login successful!');
+}
 
-    // Close the modal
+function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
     modal.style.display = 'none';
-
-    // Optional: Show success message
-    alert('Profile updated successfully!');
 }
 
 // Exercise Logging
@@ -202,56 +299,6 @@ function addWater() {
 }
 
 // Utility functions
-function editProfile() {
-    // Get current values
-    const currentAge = document.getElementById('userAge').textContent;
-    const currentWeight = document.getElementById('userWeight').textContent;
-    const currentHeight = document.getElementById('userHeight').textContent;
-
-    // Set form values to current values
-    document.getElementById('editAge').value = currentAge;
-    document.getElementById('editWeight').value = currentWeight;
-    document.getElementById('editHeight').value = currentHeight;
-
-    // Show modal and setup close button
-    modal.style.display = 'block';
-    
-    // Handle form submission
-    editProfileForm.onsubmit = function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const newAge = document.getElementById('editAge').value;
-        const newWeight = document.getElementById('editWeight').value;
-        const newHeight = document.getElementById('editHeight').value;
-
-        // Update profile display
-        document.getElementById('userAge').textContent = newAge;
-        document.getElementById('userWeight').textContent = newWeight; 
-        document.getElementById('userHeight').textContent = newHeight;
-
-        // Calculate and update BMI
-        const heightInMeters = newHeight / 100;
-        const bmi = (newWeight / (heightInMeters * heightInMeters)).toFixed(1);
-        document.getElementById('userBMI').textContent = bmi;
-
-        // Close modal
-        modal.style.display = 'none';
-    };
-
-    // Close modal when clicking X
-    closeBtn.onclick = function() {
-        modal.style.display = 'none';
-    };
-
-    // Close modal when clicking outside
-    window.onclick = function(e) {
-        if (e.target == modal) {
-            modal.style.display = 'none';
-        }
-    };
-}
-
 function addNewGoal() {
     // Get the goal input values
     const goalTitle = document.getElementById('goalTitle').value;
@@ -432,5 +479,65 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function saveProfile(event) {
+    event.preventDefault();
+    
+    // Get form values
+    const formData = {
+        name: document.getElementById('userName').value,
+        age: document.getElementById('userAge').value,
+        weight: document.getElementById('userWeight').value,
+        height: document.getElementById('userHeight').value
+    };
+
+    // Update profile display on dashboard
+    document.querySelector('.profile-summary h3').textContent = formData.name;
+    document.getElementById('displayAge').textContent = formData.age;
+    document.getElementById('displayWeight').textContent = `${formData.weight} kg`;
+    document.getElementById('displayHeight').textContent = `${formData.height} cm`;
+
+    // Calculate and update BMI
+    const bmi = calculateBMI(formData.weight, formData.height);
+    document.getElementById('displayBMI').textContent = bmi.toFixed(1);
+
+    // Save to localStorage for persistence
+    localStorage.setItem('userProfile', JSON.stringify(formData));
+
+    // Close the modal
+    closeProfileModal();
+}
+
+function calculateBMI(weight, height) {
+    // Convert height from cm to meters
+    const heightInMeters = height / 100;
+    return weight / (heightInMeters * heightInMeters);
+}
+
+// Load profile data when page loads
+function loadProfile() {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+        const profile = JSON.parse(savedProfile);
+        
+        // Set form values
+        document.getElementById('userName').value = profile.name;
+        document.getElementById('userAge').value = profile.age;
+        document.getElementById('userWeight').value = profile.weight;
+        document.getElementById('userHeight').value = profile.height;
+
+        // Update dashboard display
+        document.querySelector('.profile-summary h3').textContent = profile.name;
+        document.getElementById('displayAge').textContent = profile.age;
+        document.getElementById('displayWeight').textContent = `${profile.weight} kg`;
+        document.getElementById('displayHeight').textContent = `${profile.height} cm`;
+        
+        const bmi = calculateBMI(profile.weight, profile.height);
+        document.getElementById('displayBMI').textContent = bmi.toFixed(1);
+    }
+}
+
+// Call loadProfile when page loads
+document.addEventListener('DOMContentLoaded', loadProfile);
 
     

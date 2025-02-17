@@ -77,125 +77,191 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="./images/hero-image.jpg" alt="Fitness Training">
+                <img src="./images/class-1.jpg" alt="Fitness Training">
             </div>
         </div>
     </section>
 
     <!-- Main Dashboard -->
     <div class="dashboard">
-        <!-- User Profile Card -->
-        <div class="dashboard-card">
-            <div id="editProfileModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h3>Edit Profile</h3>
-                    <form id="editProfileForm">
-                        <div class="form-group">
-                            <label for="editAge">Age:</label>
-                            <input type="number" id="editAge" required>
+        <!-- Dashboard Navigation -->
+        <div class="dashboard-nav">
+            <button class="dash-nav-btn active" data-tab="overview">Overview</button>
+            <button class="dash-nav-btn" data-tab="progress">Progress</button>
+            <button class="dash-nav-btn" data-tab="schedule">Schedule</button>
+            <button class="dash-nav-btn" data-tab="nutrition">Nutrition</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Quick Stats Row -->
+            <div class="dashboard-card quick-stats">
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <i class="ri-heart-pulse-line"></i>
+                        <span>75 BPM</span>
+                        <p>Heart Rate</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="ri-footprint-line"></i>
+                        <span id="stepCount">8,432</span>
+                        <p>Steps</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="ri-fire-line"></i>
+                        <span id="calories">420</span>
+                        <p>kcal</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="ri-water-flash-line"></i>
+                        <span id="waterAmount">1.2</span>
+                        <p>Water (L)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Charts -->
+            <div class="dashboard-card progress-charts">
+                <h3>Weekly Progress</h3>
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Workout Schedule -->
+            <div class="dashboard-card schedule">
+                <h3>Weekly Schedule</h3>
+                <div class="schedule-grid">
+                    <div class="schedule-day">
+                        <h4>Mon</h4>
+                        <div class="workout-slot" draggable="true">Upper Body</div>
+                    </div>
+                    <div class="schedule-day">
+                        <h4>Tue</h4>
+                        <div class="workout-slot" draggable="true">Cardio</div>
+                    </div>
+                    <!-- Add more days -->
+                </div>
+                <button class="btn btn-outline" onclick="addWorkout()">Add Workout</button>
+            </div>
+
+            <!-- User Profile Card with improved layout -->
+            <div class="dashboard-card profile-card">
+                <div class="profile-header">
+                    <img src="./images/profile-placeholder.jpg" alt="Profile" class="profile-image">
+                    <div class="profile-summary">
+                        <h3>###</h3>
+                        <p class="profile-status">Premium Member</p>
+                    </div>
+                    <button class="btn-icon" onclick="editProfile()">
+                        <i class="ri-edit-line"></i>
+                    </button>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Age:</span>
+                        <span id="displayAge">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Weight:</span>
+                        <span id="displayWeight">0 kg</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Height:</span>
+                        <span id="displayHeight">0 cm</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">BMI:</span>
+                        <span id="displayBMI">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Goals Section -->
+            <div class="dashboard-card goals-card">
+                <div class="card-header">
+                    <h3>Fitness Goals</h3>
+                    <button class="btn-icon" onclick="showGoalModal()">
+                        <i class="ri-add-line"></i>
+                    </button>
+                </div>
+                <div class="goals-list" id="goalsContainer">
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <h4>Weight Loss</h4>
+                            <p>Target: 70kg</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 60%"></div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="editWeight">Weight (kg):</label>
-                            <input type="number" id="editWeight" step="0.1" required>
+                        <span class="goal-deadline">2 weeks left</span>
+                    </div>
+                    <!-- More goals will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Enhanced Nutrition Section -->
+            <div class="dashboard-card nutrition-card">
+                <h3>Today's Nutrition</h3>
+                <div class="nutrition-overview">
+                    <div class="macro-chart">
+                        <canvas id="macroChart"></canvas>
+                    </div>
+                    <div class="nutrition-stats">
+                        <div class="macro-item">
+                            <span class="macro-label">Proteins</span>
+                            <span class="macro-value">120g</span>
                         </div>
-                        <div class="form-group">
-                            <label for="editHeight">Height (cm):</label>
-                            <input type="number" id="editHeight" required>
+                        <div class="macro-item">
+                            <span class="macro-label">Carbs</span>
+                            <span class="macro-value">200g</span>
                         </div>
-                        <button type="submit" class="btn">Save Changes</button>
-                    </form>
-                </div>
-            </div>
-            <h3>My Profile</h3>
-            <div class="profile-info">
-                <p>Age: <span id="userAge">28</span></p>
-                <p>Weight: <span id="userWeight">75</span> kg</p>
-                <p>Height: <span id="userHeight">175</span> cm</p>
-                <p>BMI: <span id="userBMI">24.5</span></p>
-                <button class="btn" onclick="editProfile()">Edit Profile</button>
-            </div>
-        </div>
-
-        <!-- Activity Tracking -->
-        <div class="dashboard-card">
-            <h3>Today's Activity</h3>
-            <div class="activity-stats">
-                <div class="stat">
-                    <i class="ri-footprint-line"></i>
-                    <span id="stepCount">8,432</span>
-                    <p>Steps</p>
-                </div>
-                <div class="stat">
-                    <i class="ri-route-line"></i>
-                    <span id="distance">5.2</span>
-                    <p>km</p>
-                </div>
-                <div class="stat">
-                    <i class="ri-fire-line"></i>
-                    <span id="calories">420</span>
-                    <p>kcal</p>
+                        <div class="macro-item">
+                            <span class="macro-label">Fats</span>
+                            <span class="macro-value">65g</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Goals Section -->
-        <div class="dashboard-card">
-            <h3>Fitness Goals</h3>
-            <div class="goals-form">
-                <input type="text" id="goalTitle" placeholder="Goal Title" required>
-                <input type="text" id="goalTarget" placeholder="Target" required>
-                <input type="date" id="goalDeadline" required>
-                <button onclick="addNewGoal()" class="btn">Add Goal</button>
-            </div>
-            <div id="goalsContainer" class="goals-list">
-                <!-- Goals will be added here -->
-            </div>
-        </div>
-
-        <!-- Exercise Log -->
-        <div class="dashboard-card">
-            <h3>Exercise Log</h3>
-            <div class="exercise-log">
-                <button class="btn" onclick="logExercise()">Log New Exercise</button>
-                <div class="log-entries">
-                    <!-- Exercise entries will be added here -->
+    <!-- Profile Edit Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfileModal()">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-group profile-image-upload">
+                    <div class="image-preview-container">
+                        <img id="imagePreview" src="./images/profile-placeholder.jpg" alt="Profile Preview">
+                        <div class="upload-overlay">
+                            <i class="ri-camera-line"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="profileImage" name="profileImage" accept="image/*" onchange="previewImage(event)">
+                    <label for="profileImage" class="upload-btn">
+                        <i class="ri-upload-2-line"></i>
+                        Change Photo
+                    </label>
                 </div>
-            </div>
-        </div>
-
-        <!-- Nutrition Tracking -->
-        <div class="dashboard-card">
-            <h3>Nutrition Tracker</h3>
-            <div class="nutrition-tracker">
-                <div class="meal-card">
-                    <h4>Breakfast</h4>
-                    <p>Calories: <span id="breakfastCal">320</span></p>
-                    <button class="btn" onclick="logMeal('breakfast')">Add Food</button>
+                <div class="form-group">
+                    <label for="userName">Name</label>
+                    <input type="text" id="userName" name="userName" required>
                 </div>
-                <div class="meal-card">
-                    <h4>Lunch</h4>
-                    <p>Calories: <span id="lunchCal">520</span></p>
-                    <button class="btn" onclick="logMeal('lunch')">Add Food</button>
+                <div class="form-group">
+                    <label for="userAge">Age</label>
+                    <input type="number" id="userAge" name="userAge" required>
                 </div>
-                <div class="meal-card">
-                    <h4>Dinner</h4>
-                    <p>Calories: <span id="dinnerCal">480</span></p>
-                    <button class="btn" onclick="logMeal('dinner')">Add Food</button>
+                <div class="form-group">
+                    <label for="userWeight">Weight (kg)</label>
+                    <input type="number" id="userWeight" name="userWeight" step="0.1" required>
                 </div>
-            </div>
-        </div>
-
-        <!-- Water Intake -->
-        <div class="dashboard-card">
-            <h3>Water Intake</h3>
-            <div class="water-tracker">
-                <p><span id="waterAmount">1.2</span>/2.5 L</p>
-                <div class="water-progress">
-                    <div class="water-fill" style="width: 48%"></div>
+                <div class="form-group">
+                    <label for="userHeight">Height (cm)</label>
+                    <input type="number" id="userHeight" name="userHeight" required>
                 </div>
-                <button class="btn" onclick="addWater()">Add Water</button>
-            </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
         </div>
     </div>
 
