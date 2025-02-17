@@ -332,85 +332,118 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get user data from localStorage
-            const userData = JSON.parse(localStorage.getItem('userData'));
-            
-            // Check if user is logged in
-            if (!userData || !userData.email) {
-                // Redirect to login page using relative path
-                window.location.href = 'dashboard.html';
-                return;
-            }
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Dashboard loading...');
+            try {
+                // First check if user is authenticated
+                const authCheck = await fetch('/api/auth/check');
+                if (!authCheck.ok) {
+                    throw new Error('Not authenticated');
+                }
 
-            // Update welcome message and profile information
-            document.getElementById('welcomeName').textContent = userData.name || 'User';
-            document.getElementById('userName').textContent = userData.name || 'User';
-            document.getElementById('userEmail').textContent = userData.email;
-            document.getElementById('profileName').textContent = userData.name || 'User';
-            document.getElementById('profileEmail').textContent = userData.email;
-            
-            // Format and display member since date
-            const memberDate = userData.created_at 
-                ? new Date(userData.created_at).toLocaleDateString()
-                : new Date().toLocaleDateString();
-            document.getElementById('memberSince').textContent = memberDate;
+                // Continue with profile fetch
+                const response = await fetch('/api/user/profile');
+                console.log('Profile response:', response);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile');
+                }
+                
+                const userData = await response.json();
+                console.log('User data:', userData);
+                
+                // Update welcome message and profile information
+                document.getElementById('welcomeName').textContent = userData.name || 'User';
+                document.getElementById('userName').textContent = userData.name || 'User';
+                document.getElementById('userEmail').textContent = userData.email;
+                document.getElementById('profileName').textContent = userData.name || 'User';
+                document.getElementById('profileEmail').textContent = userData.email;
+                
+                // Format and display member since date
+                const memberDate = userData.created_at 
+                    ? new Date(userData.created_at).toLocaleDateString()
+                    : new Date().toLocaleDateString();
+                document.getElementById('memberSince').textContent = memberDate;
 
-            // Load existing notes
-            loadNotes();
+                // Load existing notes
+                await loadNotes();
 
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                localStorage.removeItem('userData');
-                localStorage.removeItem('userNotes');
+                // Logout functionality
+                document.getElementById('logoutBtn').addEventListener('click', async function() {
+                    await fetch('/api/auth/logout', { method: 'POST' });
+                    window.location.href = 'login.html';
+                });
+            } catch (error) {
+                console.error('Dashboard error:', error);
                 window.location.href = 'login.html';
-            });
+            }
         });
 
-        function addNote() {
+        async function addNote() {
             const noteInput = document.getElementById('noteInput');
             const noteText = noteInput.value.trim();
             
             if (!noteText) return;
 
-            const note = {
-                id: Date.now(),
-                text: noteText,
-                date: new Date().toISOString()
-            };
+            try {
+                const response = await fetch('/api/notes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: noteText })
+                });
 
-            // Get existing notes
-            const notes = JSON.parse(localStorage.getItem('userNotes') || '[]');
-            notes.unshift(note); // Add new note at the beginning
-            
-            // Save updated notes
-            localStorage.setItem('userNotes', JSON.stringify(notes));
-            
-            // Clear input
-            noteInput.value = '';
-            
-            // Reload notes display
-            loadNotes();
+                if (!response.ok) {
+                    throw new Error('Failed to add note');
+                }
+                
+                // Clear input
+                noteInput.value = '';
+                
+                // Reload notes display
+                await loadNotes();
+            } catch (error) {
+                console.error('Error adding note:', error);
+            }
         }
 
-        function deleteNote(noteId) {
-            const notes = JSON.parse(localStorage.getItem('userNotes') || '[]');
-            const updatedNotes = notes.filter(note => note.id !== noteId);
-            localStorage.setItem('userNotes', JSON.stringify(updatedNotes));
-            loadNotes();
+        async function deleteNote(noteId) {
+            try {
+                const response = await fetch(`/api/notes/${noteId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete note');
+                }
+
+                await loadNotes();
+            } catch (error) {
+                console.error('Error deleting note:', error);
+            }
         }
 
-        function loadNotes() {
-            const notesList = document.getElementById('notesList');
-            const notes = JSON.parse(localStorage.getItem('userNotes') || '[]');
-            
-            notesList.innerHTML = notes.map(note => `
-                <div class="note-card">
-                    <button class="delete-btn" onclick="deleteNote(${note.id})">×</button>
-                    <div class="date">${new Date(note.date).toLocaleDateString()}</div>
-                    <p>${note.text}</p>
-                </div>
-            `).join('');
+        async function loadNotes() {
+            try {
+                const response = await fetch('/api/notes');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch notes');
+                }
+
+                const notes = await response.json();
+                const notesList = document.getElementById('notesList');
+                
+                notesList.innerHTML = notes.map(note => `
+                    <div class="note-card">
+                        <button class="delete-btn" onclick="deleteNote(${note.id})">×</button>
+                        <div class="date">${new Date(note.date).toLocaleDateString()}</div>
+                        <p>${note.text}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading notes:', error);
+            }
         }
     </script>
 </body>

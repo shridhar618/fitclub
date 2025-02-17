@@ -52,5 +52,62 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Google sign in clicked');
         // You would typically initialize and trigger Google Sign In here
         // google.accounts.id.prompt();
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+        
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+        
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+        
+                const data = await response.json();
+        
+                if (data.status === 'success') {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (error) {
+                alert('Login failed');
+            }
+        });
     });
 }); 
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Login successful, redirecting...');
+            window.location.href = data.redirect || '/dashboard.html';
+        } else {
+            alert(data.message || 'Login failed');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('An error occurred during login');
+    }
+});
+
