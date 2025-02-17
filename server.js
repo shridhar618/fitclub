@@ -202,3 +202,57 @@ process.on('SIGINT', () => {
         process.exit(0);
     });
 });
+
+
+// Dashboard API
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Admin page route
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// API route to get all users
+app.get('/api/users', (req, res) => {
+    db.all('SELECT * FROM users ORDER BY created_at DESC', [], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+// API route to delete a user
+app.delete('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM users WHERE id = ?', id, function(err) {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json({ message: "User deleted", changes: this.changes });
+    });
+});
+
+// API route to get user statistics
+app.get('/api/stats', (req, res) => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    db.get(`
+        SELECT 
+            COUNT(*) as total_users,
+            SUM(CASE WHEN date(created_at) = date('now') THEN 1 ELSE 0 END) as new_users_today,
+            COUNT(*) as active_users
+        FROM users
+    `, [], (err, stats) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json(stats);
+    });
+});
+

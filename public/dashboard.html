@@ -336,20 +336,24 @@
             // Get user data from localStorage
             const userData = JSON.parse(localStorage.getItem('userData'));
             
-            if (!userData) {
-                window.location.href = '/login';
+            // Check if user is logged in
+            if (!userData || !userData.email) {
+                // Redirect to login page using relative path
+                window.location.href = 'dashboard.html';
                 return;
             }
 
             // Update welcome message and profile information
-            document.getElementById('welcomeName').textContent = userData.name;
-            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('welcomeName').textContent = userData.name || 'User';
+            document.getElementById('userName').textContent = userData.name || 'User';
             document.getElementById('userEmail').textContent = userData.email;
-            document.getElementById('profileName').textContent = userData.name;
+            document.getElementById('profileName').textContent = userData.name || 'User';
             document.getElementById('profileEmail').textContent = userData.email;
             
             // Format and display member since date
-            const memberDate = new Date(userData.created_at).toLocaleDateString();
+            const memberDate = userData.created_at 
+                ? new Date(userData.created_at).toLocaleDateString()
+                : new Date().toLocaleDateString();
             document.getElementById('memberSince').textContent = memberDate;
 
             // Load existing notes
@@ -359,7 +363,7 @@
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 localStorage.removeItem('userData');
                 localStorage.removeItem('userNotes');
-                window.location.href = '/login';
+                window.location.href = 'login.html';
             });
         });
 

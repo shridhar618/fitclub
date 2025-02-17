@@ -272,6 +272,38 @@
             console.error('Error:', error);
             alert('An error occurred during signup');
         }
+
+        
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const userData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    // Add other fields as needed
+                };
+        
+                // Register the user
+                registerUser(userData);
+        
+                // Clear the form
+                this.reset();
+                
+                // Show success message
+                alert('Registration successful!');
+            });
+        
+            function registerUser(userData) {
+                const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+                
+                const newUser = {
+                    ...userData,
+                    created_at: new Date().toISOString()
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
+            }
     });
     </script>
 </body>
