@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Fitness Progress Chart</title>
+    <style>
+        #chart-container {
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align:center">Fitness Progress Chart</h2>
+    <div id="chart-container">
+        <canvas id="progressChart"></canvas>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let ctx = document.getElementById("progressChart").getContext("2d");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"],
+                datasets: [{
+                    label: "Weight (kg)",
+                    data: [75, 74, 73, 72, 71], // Example data
+                    borderColor: "blue",
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>

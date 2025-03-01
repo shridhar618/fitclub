@@ -488,10 +488,4 @@ app.get('/index.html', (req, res) => {
 
 
 
-fetch('/api/progress')
-  .then(response => response.json())
-  .then(data => {
-      progressChart.data.labels = data.dates;
-      progressChart.data.datasets[0].data = data.weights;
-      progressChart.update();
-  });
+
