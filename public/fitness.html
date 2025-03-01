@@ -130,7 +130,7 @@
             <!-- Workout Schedule -->
             <div class="dashboard-card schedule">
                 <h3>Weekly Schedule</h3>
-                <div class="schedule-grid">
+                <div class="schedule-grid" id="scheduleGrid">
                     <div class="schedule-day">
                         <h4>Mon</h4>
                         <div class="workout-slot" draggable="true">Upper Body</div>
@@ -139,9 +139,18 @@
                         <h4>Tue</h4>
                         <div class="workout-slot" draggable="true">Cardio</div>
                     </div>
-                    <!-- Add more days -->
+                    <!-- More days can be added dynamically -->
                 </div>
-                <button class="btn btn-outline" onclick="addWorkout()">Add Workout</button>
+            
+                <!-- Add Workout Button -->
+                <button class="btn btn-outline" onclick="showWorkoutInput()">Add Workout</button>
+            
+                <!-- Hidden Input Fields -->
+                <div id="workoutInput" style="display: none; margin-top: 10px;">
+                    <input type="text" id="dayInput" placeholder="Enter Day (e.g., Mon)">
+                    <input type="text" id="workoutInputField" placeholder="Enter Workout">
+                    <button id="addWorkoutBtn" onclick="addWorkout()">Add</button>
+                </div>
             </div>
 
             <!-- User Profile Card with improved layout -->

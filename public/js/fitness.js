@@ -541,3 +541,57 @@ function loadProfile() {
 document.addEventListener('DOMContentLoaded', loadProfile);
 
     
+
+
+function showWorkoutInput() {
+    document.getElementById("workoutInput").style.display = "block";
+}
+
+function addWorkout() {
+    let day = document.getElementById("dayInput").value.trim();
+    let workout = document.getElementById("workoutInputField").value.trim();
+
+    if (day === "" || workout === "") {
+        alert("Please enter both day and workout!");
+        return;
+    }
+
+    let scheduleGrid = document.getElementById("scheduleGrid");
+    let dayElements = scheduleGrid.getElementsByClassName("schedule-day");
+    let dayExists = false;
+
+    for (let i = 0; i < dayElements.length; i++) {
+        let dayHeader = dayElements[i].getElementsByTagName("h4")[0];
+        if (dayHeader.innerText.toLowerCase() === day.toLowerCase()) {
+            let newWorkout = document.createElement("div");
+            newWorkout.classList.add("workout-slot");
+            newWorkout.setAttribute("draggable", "true");
+            newWorkout.innerText = workout;
+            dayElements[i].appendChild(newWorkout);
+            dayExists = true;
+            break;
+        }
+    }
+
+    if (!dayExists) {
+        let newDay = document.createElement("div");
+        newDay.classList.add("schedule-day");
+
+        let dayTitle = document.createElement("h4");
+        dayTitle.innerText = day;
+
+        let newWorkout = document.createElement("div");
+        newWorkout.classList.add("workout-slot");
+        newWorkout.setAttribute("draggable", "true");
+        newWorkout.innerText = workout;
+
+        newDay.appendChild(dayTitle);
+        newDay.appendChild(newWorkout);
+        scheduleGrid.appendChild(newDay);
+    }
+
+    // Clear input fields and hide input box
+    document.getElementById("dayInput").value = "";
+    document.getElementById("workoutInputField").value = "";
+    document.getElementById("workoutInput").style.display = "none";
+}
