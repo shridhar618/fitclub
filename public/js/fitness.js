@@ -546,6 +546,13 @@ document.addEventListener('DOMContentLoaded', loadProfile);
 function showWorkoutInput() {
     document.getElementById("workoutInput").style.display = "block";
 }
+function showWorkoutInput() {
+    document.getElementById("workoutInput").style.display = "block";
+}
+
+function hideWorkoutInput() {
+    document.getElementById("workoutInput").style.display = "none";
+}
 
 function addWorkout() {
     let day = document.getElementById("dayInput").value.trim();
@@ -593,5 +600,42 @@ function addWorkout() {
     // Clear input fields and hide input box
     document.getElementById("dayInput").value = "";
     document.getElementById("workoutInputField").value = "";
-    document.getElementById("workoutInput").style.display = "none";
+    hideWorkoutInput();
 }
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let ctx = document.getElementById("progressChart").getContext("2d");
+
+    let progressChart = new Chart(ctx, {
+        type: "line", // You can also use 'bar', 'pie', etc.
+        data: {
+            labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"], // X-axis (Time)
+            datasets: [{
+                label: "Weight (kg)", // Change based on the tracked metric
+                data: [75, 74, 73, 72, 71], // Example progress data
+                borderColor: "blue",
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+});
+
+
+function updateProgress(newData) {
+    progressChart.data.datasets[0].data.push(newData); // Add new data
+    progressChart.data.labels.push("Week " + (progressChart.data.labels.length + 1)); // New label
+    progressChart.update(); // Refresh chart
+}
+
+

@@ -485,3 +485,13 @@ app.get('/dashboard.html', (req, res) => {
 app.get('/index.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+
+
+fetch('/api/progress')
+  .then(response => response.json())
+  .then(data => {
+      progressChart.data.labels = data.dates;
+      progressChart.data.datasets[0].data = data.weights;
+      progressChart.update();
+  });

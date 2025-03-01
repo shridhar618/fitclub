@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/chart.js" rel="stylesheet" />
     <link rel="stylesheet" href="./css/fitness.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
 
@@ -123,7 +125,7 @@
             <div class="dashboard-card progress-charts">
                 <h3>Weekly Progress</h3>
                 <div class="chart-container">
-                    <canvas id="progressChart"></canvas>
+                    <canvas id="progressChart" width="400" height="200"></canvas>
                 </div>
             </div>
 
@@ -146,7 +148,8 @@
                 <button class="btn btn-outline" onclick="showWorkoutInput()">Add Workout</button>
             
                 <!-- Hidden Input Fields -->
-                <div id="workoutInput" style="display: none; margin-top: 10px;">
+                <div id="workoutInput" style="display: none; margin-top: 10px; position: relative;">
+                    <span onclick="hideWorkoutInput()" style="position: absolute; top: 5px; right: 10px; cursor: pointer; font-size: 18px;">✖</span>
                     <input type="text" id="dayInput" placeholder="Enter Day (e.g., Mon)">
                     <input type="text" id="workoutInputField" placeholder="Enter Workout">
                     <button id="addWorkoutBtn" onclick="addWorkout()">Add</button>
