@@ -3,7 +3,7 @@
     --primary-color: #ff4d37;
     --primary-color-dark: #e63e2a;
     --primary-color-light: rgba(255, 77, 55, 0.1);
-    --text-color: #343a40;
+    --text-color: #0a0a0a;
     --bg-color: #f8f9fa;
     --card-bg: #ffffff;
     --border-color: #dee2e6;
@@ -1003,4 +1003,80 @@ body {
 
 .notification.warning {
     background-color: var(--warning-color);
+}
+
+
+
+.dashboard-card {
+    width: 90%;
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    margin: auto;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.schedule-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.schedule-day {
+    background: #e9ecef;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+}
+.workout-slot {
+    background: #007bff;
+    color: white;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.input-container {
+    display: none;
+    margin-top: 10px;
+    position: relative;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+}
+input {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+}
+button:hover {
+    background-color: #0056b3;
 }

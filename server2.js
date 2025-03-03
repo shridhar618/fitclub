@@ -1,12 +1,15 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import bodyParser from "body-parser";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const path = require("path");
 
+// Configure environment variables
 dotenv.config();
+
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -19,7 +22,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Serve Frontend
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/views/index.html");
+    res.sendFile(path.join(__dirname, "/views/index.html"));
 });
 
 // Chatbot API Endpoint
@@ -27,7 +30,7 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     if (!message) {
-        return res.json({ reply: "I didn't understand that. Can you rephrase?" });
+        return res.status(400).json({ reply: "I didn't understand that. Can you rephrase?" });
     }
 
     console.log(`User: ${message}`);
@@ -40,7 +43,7 @@ app.post("/chat", async (req, res) => {
 
     } catch (error) {
         console.error("Error:", error);
-        res.json({ reply: "Error: Unable to connect to Gemini API" });
+        res.status(500).json({ reply: "Error: Unable to connect to Gemini API" });
     }
 });
 

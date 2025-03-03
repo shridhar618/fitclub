@@ -28,7 +28,7 @@
                         <i class="ri-calendar-todo-line"></i>
                         <span>Programs</span>
                     </a></li>
-                    <li><a href="#dashboard" class="nav-link">
+                    <li><a href="dashboard.html" class="nav-link">
                         <i class="ri-dashboard-line"></i>
                         <span>Dashboard</span>
                     </a></li>
@@ -36,7 +36,7 @@
                         <i class="ri-restaurant-line"></i>
                         <span>Nutrition</span>
                     </a></li>
-                    <li><a href="#contact" class="nav-link">
+                    <li><a href="index.html" class="nav-link">
                         <i class="ri-customer-service-2-line"></i>
                         <span>Contact</span>
                     </a></li>
@@ -85,7 +85,7 @@
     </section>
 
     <!-- Main Dashboard -->
-    <div class="dashboard">
+    <div class="dashboard" id="dashboard">
         <!-- Dashboard Navigation -->
         <div class="dashboard-nav">
             <button class="dash-nav-btn active" data-tab="overview">Overview</button>
@@ -135,24 +135,27 @@
                 <div class="schedule-grid" id="scheduleGrid">
                     <div class="schedule-day">
                         <h4>Mon</h4>
-                        <div class="workout-slot" draggable="true">Upper Body</div>
+                        <div class="workout-slot" draggable="true">
+                            Upper Body <button class="delete-btn" onclick="deleteWorkout(this)">X</button>
+                        </div>
                     </div>
                     <div class="schedule-day">
                         <h4>Tue</h4>
-                        <div class="workout-slot" draggable="true">Cardio</div>
+                        <div class="workout-slot" draggable="true">
+                            Cardio <button class="delete-btn" onclick="deleteWorkout(this)">X</button>
+                        </div>
                     </div>
-                    <!-- More days can be added dynamically -->
                 </div>
             
                 <!-- Add Workout Button -->
                 <button class="btn btn-outline" onclick="showWorkoutInput()">Add Workout</button>
             
                 <!-- Hidden Input Fields -->
-                <div id="workoutInput" style="display: none; margin-top: 10px; position: relative;">
-                    <span onclick="hideWorkoutInput()" style="position: absolute; top: 5px; right: 10px; cursor: pointer; font-size: 18px;">✖</span>
+                <div class="input-container" id="workoutInput">
+                    <span class="close-btn" onclick="hideWorkoutInput()">✖</span>
                     <input type="text" id="dayInput" placeholder="Enter Day (e.g., Mon)">
                     <input type="text" id="workoutInputField" placeholder="Enter Workout">
-                    <button id="addWorkoutBtn" onclick="addWorkout()">Add</button>
+                    <button onclick="addWorkout()">Add</button>
                 </div>
             </div>
 

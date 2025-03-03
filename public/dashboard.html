@@ -285,7 +285,7 @@
 
     <div class="dashboard-container">
         <div class="welcome-banner">
-            <h2>Welcome, <span id="welcomeName">User</span>! 👋</h2>
+            <h2>Welcome, <span id="welcomeName">${userName}</span>! 👋</h2>
             <p>Track your fitness goals and stay motivated</p>
         </div>
 
@@ -295,7 +295,7 @@
                 <div class="profile-info">
                     <h1 id="userName">Loading...</h1>
                     <p id="userEmail">Loading...</p>
-                    <button class="edit-btn" style="margin-top: 1rem;">Edit Profile</button>
+                    <button class="edit-btn" style="margin-top: 1rem;" onclick="editProfile()">Edit Profile</button>
                 </div>
             </div>
 
@@ -444,6 +444,11 @@
             } catch (error) {
                 console.error('Error loading notes:', error);
             }
+        }
+
+        function editProfile() {
+            var userName=prompt("What is Your good name?")
+            alert("Welcome " + userName)
         }
     </script>
 </body>

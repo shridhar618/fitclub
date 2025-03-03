@@ -554,6 +554,14 @@ function hideWorkoutInput() {
     document.getElementById("workoutInput").style.display = "none";
 }
 
+function showWorkoutInput() {
+    document.getElementById("workoutInput").style.display = "block";
+}
+
+function hideWorkoutInput() {
+    document.getElementById("workoutInput").style.display = "none";
+}
+
 function addWorkout() {
     let day = document.getElementById("dayInput").value.trim();
     let workout = document.getElementById("workoutInputField").value.trim();
@@ -573,7 +581,7 @@ function addWorkout() {
             let newWorkout = document.createElement("div");
             newWorkout.classList.add("workout-slot");
             newWorkout.setAttribute("draggable", "true");
-            newWorkout.innerText = workout;
+            newWorkout.innerHTML = `${workout} <button class="delete-btn" onclick="deleteWorkout(this)">X</button>`;
             dayElements[i].appendChild(newWorkout);
             dayExists = true;
             break;
@@ -590,7 +598,7 @@ function addWorkout() {
         let newWorkout = document.createElement("div");
         newWorkout.classList.add("workout-slot");
         newWorkout.setAttribute("draggable", "true");
-        newWorkout.innerText = workout;
+        newWorkout.innerHTML = `${workout} <button class="delete-btn" onclick="deleteWorkout(this)">X</button>`;
 
         newDay.appendChild(dayTitle);
         newDay.appendChild(newWorkout);
@@ -601,6 +609,19 @@ function addWorkout() {
     document.getElementById("dayInput").value = "";
     document.getElementById("workoutInputField").value = "";
     hideWorkoutInput();
+}
+
+function deleteWorkout(button) {
+    let workoutSlot = button.parentElement;
+    let dayContainer = workoutSlot.parentElement;
+
+    // Remove workout slot
+    workoutSlot.remove();
+
+    // If no workouts left in a day, remove the day container
+    if (dayContainer.getElementsByClassName("workout-slot").length === 0) {
+        dayContainer.remove();
+    }
 }
 
 

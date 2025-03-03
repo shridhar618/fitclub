@@ -1,13 +1,24 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
+const dotenv = require("dotenv");
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
 const SQLiteStore = require('connect-sqlite3')(session);
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// Load environment variables
+dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -21,7 +32,7 @@ if (!fs.existsSync(dbDir)) {
 app.use(session({
     store: new SQLiteStore({
         db: 'sessions.db',
-        dir: path.join(__dirname, 'db'),
+        dir: dbDir,
         table: 'sessions'
     }),
     secret: 'your-secret-key',
@@ -46,7 +57,8 @@ const db = new sqlite3.Database(path.join(__dirname, 'db', 'fitclub.db'), (err) 
         console.error('Database connection error:', err);
     } else {
         console.log('Connected to database successfully');
-        // Create users table if it doesn't exist
+        
+        // Create users table if it doesn't exist (only once)
         db.run(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,40 +72,58 @@ const db = new sqlite3.Database(path.join(__dirname, 'db', 'fitclub.db'), (err) 
                 console.error('Error creating users table:', err);
             } else {
                 console.log('Users table ready');
-            }
-        });
-
-        // Add this after database connection
-        db.serialize(() => {
-            // Create users table
-            db.run(`
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    email TEXT UNIQUE,
-                    password TEXT
-                )`);
-
-            // Add a test user (password: test123)
-            const testEmail = 'test@test.com';
-            bcrypt.hash('test123', 10, (err, hash) => {
-                if (err) {
-                    console.error('Error creating test user:', err);
-                    return;
-                }
-                db.run(`
-                    INSERT OR REPLACE INTO users (email, password) 
-                    VALUES (?, ?)
-                `, [testEmail, hash], (err) => {
+                
+                // Add a test user (password: test123)
+                const testEmail = 'test@test.com';
+                bcrypt.hash('test123', 10, (err, hash) => {
                     if (err) {
-                        console.error('Error inserting test user:', err);
-                    } else {
-                        console.log('Test user created successfully');
+                        console.error('Error creating test user:', err);
+                        return;
                     }
+                    db.run(`
+                        INSERT OR REPLACE INTO users (email, password, name) 
+                        VALUES (?, ?, ?)
+                    `, [testEmail, hash, 'Test User'], (err) => {
+                        if (err) {
+                            console.error('Error inserting test user:', err);
+                        } else {
+                            console.log('Test user created successfully');
+                        }
+                    });
                 });
-            });
+            }
         });
     }
 });
+
+// Function to get database connection
+function getDb() {
+    return db;
+}
+
+// Authentication middleware
+const authenticateUser = (req, res, next) => {
+    // Check if user is logged in via session
+    if (!req.session || !req.session.userId) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    // Get user from database
+    db.get('SELECT id, name, email FROM users WHERE id = ?', [req.session.userId], (err, user) => {
+        if (err) {
+            console.error('Auth error:', err);
+            return res.status(401).json({ error: 'Authentication failed' });
+        }
+        
+        if (!user) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+
+        // Attach user to request object
+        req.user = user;
+        next();
+    });
+};
 
 // Routes
 app.get('/', (req, res) => {
@@ -178,32 +208,7 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
-// Update authentication middleware
-const authenticateUser = async (req, res, next) => {
-    try {
-        // Check if user is logged in via session
-        if (!req.session || !req.session.userId) {
-            return res.status(401).json({ error: 'Not authenticated' });
-        }
-
-        // Get user from database
-        const db = await getDb();
-        const user = await db.get('SELECT id, name, email FROM users WHERE id = ?', [req.session.userId]);
-        
-        if (!user) {
-            return res.status(401).json({ error: 'User not found' });
-        }
-
-        // Attach user to request object
-        req.user = user;
-        next();
-    } catch (error) {
-        console.error('Auth error:', error);
-        res.status(401).json({ error: 'Authentication failed' });
-    }
-};
-
-// Update login route with proper database handling
+// Login route
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
     console.log('Login attempt for:', email);
@@ -236,7 +241,7 @@ app.post('/api/login', (req, res) => {
                 return res.json({ 
                     success: true,
                     message: 'Login successful',
-                    redirect: '/dashboard.html'  // Changed to redirect to dashboard
+                    redirect: '/dashboard.html'
                 });
             } else {
                 return res.status(401).json({ 
@@ -254,7 +259,7 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Add a registration route for testing
+// Registration route for api/auth
 app.post('/api/auth/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -308,7 +313,7 @@ app.post('/api/auth/register', async (req, res) => {
     }
 });
 
-// Add a test user route
+// Test user route
 app.get('/api/test-user', async (req, res) => {
     const testEmail = 'test@example.com';
     const testPassword = 'password123';
@@ -335,7 +340,7 @@ app.get('/api/test-user', async (req, res) => {
     }
 });
 
-// Add logout route
+// Logout route
 app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -345,7 +350,7 @@ app.post('/api/auth/logout', (req, res) => {
     });
 });
 
-// Add a route to check authentication status
+// Auth check route
 app.get('/api/auth/check', authenticateUser, (req, res) => {
     res.json({ 
         authenticated: true, 
@@ -353,37 +358,17 @@ app.get('/api/auth/check', authenticateUser, (req, res) => {
     });
 });
 
-// Protected API routes
-app.get('/api/user/profile', authenticateUser, async (req, res) => {
-    try {
-        const db = await getDb();
-        const user = await db.get('SELECT id, name, email, created_at FROM users WHERE id = ?', [req.user.id]);
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch profile' });
-    }
-});
-
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port http://localhost:${PORT}`);
-});
-
-// Cleanup on exit
-process.on('SIGINT', () => {
-    db.close((err) => {
+// User profile route
+app.get('/api/user/profile', authenticateUser, (req, res) => {
+    db.get('SELECT id, name, email, created_at FROM users WHERE id = ?', [req.user.id], (err, user) => {
         if (err) {
-            console.error('Error closing database:', err);
-        } else {
-            console.log('Database connection closed');
+            return res.status(500).json({ error: 'Failed to fetch profile' });
         }
-        process.exit(0);
+        res.json(user);
     });
 });
 
-
-// Dashboard API
+// Dashboard route
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
@@ -395,7 +380,7 @@ app.get('/admin', (req, res) => {
 
 // API route to get all users
 app.get('/api/users', (req, res) => {
-    db.all('SELECT * FROM users ORDER BY created_at DESC', [], (err, rows) => {
+    db.all('SELECT id, name, email, created_at FROM users ORDER BY created_at DESC', [], (err, rows) => {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
@@ -418,8 +403,6 @@ app.delete('/api/users/:id', (req, res) => {
 
 // API route to get user statistics
 app.get('/api/stats', (req, res) => {
-    const today = new Date().toISOString().split('T')[0];
-    
     db.get(`
         SELECT 
             COUNT(*) as total_users,
@@ -435,17 +418,7 @@ app.get('/api/stats', (req, res) => {
     });
 });
 
-// Update database connection function
-async function getDb() {
-    const dbPath = path.join(__dirname, 'db', 'fitclub.db');
-    return new sqlite3.Database(dbPath, (err) => {
-        if (err) {
-            console.error('Database connection error:', err);
-        }
-    });
-}
-
-// Add a test route to check database connection
+// Test database connection route
 app.get('/api/test-db', (req, res) => {
     db.get('SELECT 1', [], (err, row) => {
         if (err) {
@@ -456,7 +429,7 @@ app.get('/api/test-db', (req, res) => {
     });
 });
 
-// Simple registration route for testing
+// Simple registration route
 app.post('/api/register', async (req, res) => {
     const { email, password } = req.body;
 
@@ -476,16 +449,57 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Add a route to serve the dashboard
 app.get('/dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Add a route to serve the index page
 app.get('/index.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Configure Gemini API
+if (process.env.GEMINI_API_KEY) {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+    // Chatbot API Endpoint
+    app.post("/chat", async (req, res) => {
+        const { message } = req.body;
 
+        if (!message) {
+            return res.status(400).json({ reply: "I didn't understand that. Can you rephrase?" });
+        }
 
+        console.log(`User: ${message}`);
+
+        try {
+            const result = await model.generateContent(message);
+            const aiReply = result.response.text() || "Sorry, I couldn't fetch a response.";
+            console.log(`AI: ${aiReply}`);
+            res.json({ reply: aiReply });
+
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ reply: "Error: Unable to connect to Gemini API" });
+        }
+    });
+} else {
+    console.warn("GEMINI_API_KEY not found in environment variables. Chat functionality will not work.");
+}
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+
+// Cleanup on exit
+process.on('SIGINT', () => {
+    db.close((err) => {
+        if (err) {
+            console.error('Error closing database:', err);
+        } else {
+            console.log('Database connection closed');
+        }
+        process.exit(0);
+    });
+});
