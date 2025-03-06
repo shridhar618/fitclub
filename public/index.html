@@ -16,9 +16,10 @@
         </div>
         <ul class="nav__links">
             <li class="link"><a href="#home">Home</a></li>
-            <li class="link"><a href="#program">Program</a></li>
+            <li class="link"><a href="fitness.html">Program</a></li>
             <li class="link"><a href="dashboard.html">Dashboard</a></li>
             <li class="link"><a href="#about">About</a></li>
+            <li class="link"><a href="#contact">Chat with Trainer</a></li>
         </ul>
         
         <div class="theme__toggle">
@@ -83,6 +84,12 @@
             </div>
         </div>
     </section>
+
+     <!-- Chatbot fixed button -->
+     <!-- From Uiverse.io by Spacious74 --> 
+     <div class="container">
+        <button onclick="openChatbot()" class="button">Chat-Bot</button>
+    </div>
 
     <section class="section__container class__container" id="service">
         <div class="class__image">
@@ -279,6 +286,12 @@
     console.log('All localStorage contents:', {
         userData: localStorage.getItem('userData')
     });
+
+
+    function openChatbot() {
+    window.location.href = 'https://chatgpt.com/'; // Replace with the actual URL of your chatbot page
+  }
+
     </script>
 </body>
 
