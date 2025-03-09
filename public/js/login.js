@@ -1,85 +1,70 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('error-message');
     const togglePassword = document.querySelector('.toggle-password');
-    const passwordInput = document.getElementById('password');
-    const googleSignInBtn = document.getElementById('googleSignIn');
 
     // Toggle password visibility
-    togglePassword.addEventListener('click', function() {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        // Toggle eye icon
-        this.classList.toggle('ri-eye-line');
-        this.classList.toggle('ri-eye-off-line');
-    });
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.classList.replace('ri-eye-line', 'ri-eye-off-line');
+            } else {
+                passwordInput.type = 'password';
+                this.classList.replace('ri-eye-off-line', 'ri-eye-line');
+            }
+        });
+    }
 
-    // Handle form submission
     loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-
+        
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
+        // Basic validation
+        if (!email || !password) {
+            showError('Please fill in all fields');
+            return;
+        }
+
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
+                body: JSON.stringify({ email, password }),
+                credentials: 'include' // Important for session cookies
             });
 
             const data = await response.json();
 
-            if (data.status === 'success') {
-                window.location.href = data.redirect;  // This will now redirect to index.html
+            if (response.ok) {
+                // Store user info in localStorage
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirect to dashboard
+                window.location.href = '/dashboard.html';
             } else {
-                alert(data.message);
+                showError(data.message || 'Login failed');
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred during login. Please try again.');
+            console.error('Login error:', error);
+            showError('An error occurred during login. Please try again.');
         }
     });
 
-    // Google Sign In
-    googleSignInBtn.addEventListener('click', function() {
-        // Implement Google Sign In logic here
-        console.log('Google sign in clicked');
-        // You would typically initialize and trigger Google Sign In here
-        // google.accounts.id.prompt();
-
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
         
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-        
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-        
-                const data = await response.json();
-        
-                if (data.status === 'success') {
-                    window.location.href = data.redirect;
-                } else {
-                    alert(data.message || 'Login failed');
-                }
-            } catch (error) {
-                alert('Login failed');
-            }
-        });
-    });
+        // Hide error after 3 seconds
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+        }, 3000);
+    }
 }); 
 
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -89,7 +74,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/auth/login', {  // Updated endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -99,9 +84,9 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         const data = await response.json();
         
-        if (data.success) {
+        if (response.ok) {  // Check response.ok instead of data.success
             console.log('Login successful, redirecting...');
-            window.location.href = data.redirect || '/dashboard.html';
+            window.location.href = '/dashboard.html';  // Direct path
         } else {
             alert(data.message || 'Login failed');
         }

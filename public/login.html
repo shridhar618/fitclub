@@ -23,7 +23,7 @@
                     <h2>Login</h2>
                     <p class="form-subtitle">Sign in to your account</p>
                     
-                    <div id="error-message" style="color: red;"></div>
+                    <div id="error-message" class="error-message" style="display: none; color: red; margin-bottom: 10px;"></div>
                     
                     <div class="form-group">
                         <label for="email">Email Address</label>
@@ -38,20 +38,7 @@
                         </div>
                     </div>
 
-                    <div class="forgot-password">
-                        <a href="./auth/forgot-password.html">Forgot Password?</a>
-                    </div>
-
                     <button type="submit" class="btn btn-primary">Sign In</button>
-                    
-                    <div class="divider">
-                        <span>or</span>
-                    </div>
-
-                    <button type="button" class="btn btn-google" id="googleSignIn">
-                        <i class="ri-google-fill"></i>
-                        <span>Sign in with Google</span>
-                    </button>
                 </form>
 
                 <div class="form-footer">
@@ -62,7 +49,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://accounts.google.com/gsi/client"></script>
     <script src="./js/login.js"></script>
 </body>
 </html>

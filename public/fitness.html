@@ -101,6 +101,7 @@
         <div class="dashboard-grid">
             <!-- Quick Stats Row -->
             <div class="dashboard-card quick-stats">
+                <h1>Minimum-Requirement</h1>
                 <div class="stat-grid">
                     <div class="stat-item">
                         <i class="ri-heart-pulse-line"></i>
@@ -175,7 +176,8 @@
                         <i class="ri-edit-line"></i>
                     </button>
                 </div>
-                <div class="profile-stats">
+                <div class="profile-stats">s
+                    
                     <div class="stat-row">
                         <span class="stat-label">Age:</span>
                         <span id="displayAge">0</span>
@@ -280,6 +282,29 @@
                     <input type="number" id="userHeight" name="userHeight" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeGoalModal()">&times;</span>
+            <h2>Add New Goal</h2>
+            <form id="goalForm">
+                <div class="form-group">
+                    <label for="goalTitle">Goal Title</label>
+                    <input type="text" id="goalTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="goalTarget">Target</label>
+                    <input type="text" id="goalTarget" required>
+                </div>
+                <div class="form-group">
+                    <label for="goalDeadline">Deadline</label>
+                    <input type="date" id="goalDeadline" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Goal</button>
             </form>
         </div>
     </div>

@@ -165,15 +165,18 @@ function editProfile() {
     const modal = document.getElementById('profileModal');
     const form = document.getElementById('profileForm');
     
+    // Get current profile data
+    const profileData = JSON.parse(localStorage.getItem('userProfile') || '{}');
+    
     // Pre-fill the form with current values
-    form.userName.value = document.querySelector('.profile-summary h3').textContent.trim();
-    form.userAge.value = document.getElementById('userAge').textContent.trim();
-    form.userWeight.value = document.getElementById('userWeight').textContent.replace('kg', '').trim();
-    form.userHeight.value = document.getElementById('userHeight').textContent.replace('cm', '').trim();
+    form.userName.value = profileData.userName || '';
+    form.userAge.value = profileData.age || '';
+    form.userWeight.value = profileData.weight || '';
+    form.userHeight.value = profileData.height || '';
     
     // Set current profile image in preview
-    const currentProfileImage = document.querySelector('.profile-image').src;
-    document.getElementById('imagePreview').src = currentProfileImage;
+    const imagePreview = document.getElementById('imagePreview');
+    imagePreview.src = profileData.profileImage || './images/profile-placeholder.jpg';
     
     // Show the modal
     modal.style.display = 'block';
@@ -186,8 +189,8 @@ function previewImage(event) {
         const reader = new FileReader();
         
         reader.onload = function(e) {
-            document.getElementById('imagePreview').src = e.target.result;
-            sessionStorage.setItem('tempProfileImage', e.target.result);
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.src = e.target.result;
         }
         
         reader.readAsDataURL(file);
@@ -195,32 +198,47 @@ function previewImage(event) {
 }
 
 // Function to handle form submission
-function updateProfile(event) {
+function saveProfile(event) {
     event.preventDefault();
     
     const form = event.target;
+    const profileImage = document.getElementById('imagePreview').src;
     
-    // Update profile information
-    document.querySelector('.profile-summary h3').textContent = form.userName.value;
-    document.getElementById('userAge').textContent = form.userAge.value;
-    document.getElementById('userWeight').textContent = `${form.userWeight.value} kg`;
-    document.getElementById('userHeight').textContent = `${form.userHeight.value} cm`;
+    // Get profile data
+    const profileData = {
+        userName: form.userName.value,
+        age: form.userAge.value,
+        weight: form.userWeight.value,
+        height: form.userHeight.value,
+        profileImage: profileImage
+    };
+    
+    // Update UI
+    document.querySelector('.profile-summary h3').textContent = profileData.userName;
+    document.getElementById('displayAge').textContent = profileData.age;
+    document.getElementById('displayWeight').textContent = `${profileData.weight} kg`;
+    document.getElementById('displayHeight').textContent = `${profileData.height} cm`;
+    
+    // Update profile image everywhere
+    const profileImages = document.querySelectorAll('.profile-image');
+    profileImages.forEach(img => {
+        img.src = profileData.profileImage;
+    });
     
     // Calculate and update BMI
-    const weight = parseFloat(form.userWeight.value);
-    const height = parseFloat(form.userHeight.value);
-    const bmi = (weight / ((height/100) * (height/100))).toFixed(1);
-    document.getElementById('userBMI').textContent = bmi;
+    const weight = parseFloat(profileData.weight);
+    const height = parseFloat(profileData.height);
+    const bmi = calculateBMI(weight, height);
+    document.getElementById('displayBMI').textContent = bmi.toFixed(1);
     
-    // Update profile image if a new one was selected
-    const newProfileImage = sessionStorage.getItem('tempProfileImage');
-    if (newProfileImage) {
-        document.querySelector('.profile-image').src = newProfileImage;
-        sessionStorage.removeItem('tempProfileImage');
-    }
+    // Save to localStorage
+    localStorage.setItem('userProfile', JSON.stringify(profileData));
     
     // Close the modal
     closeProfileModal();
+    
+    // Show success message
+    showNotification('Profile updated successfully');
 }
 
 // Function to close the modal
@@ -299,7 +317,28 @@ function addWater() {
 }
 
 // Utility functions
-function addNewGoal() {
+// Function to show goal modal
+function showGoalModal() {
+    const modal = document.getElementById('goalModal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+// Function to close goal modal
+function closeGoalModal() {
+    const modal = document.getElementById('goalModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Function to add new goal
+function addNewGoal(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    
     // Get the goal input values
     const goalTitle = document.getElementById('goalTitle').value;
     const goalTarget = document.getElementById('goalTarget').value;
@@ -307,7 +346,7 @@ function addNewGoal() {
 
     // Validate inputs
     if (!goalTitle || !goalTarget || !goalDeadline) {
-        alert('Please fill in all goal fields');
+        showNotification('Please fill in all goal fields', 'error');
         return;
     }
 
@@ -317,29 +356,28 @@ function addNewGoal() {
     const daysRemaining = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
 
     if (daysRemaining < 0) {
-        alert('Please select a future date');
+        showNotification('Please select a future date', 'error');
         return;
     }
 
     // Create new goal element
     const goalsContainer = document.getElementById('goalsContainer');
     const goalElement = document.createElement('div');
-    goalElement.className = 'goal-card';
+    goalElement.className = 'goal-item';
+    goalElement.setAttribute('data-deadline', goalDeadline);
 
     goalElement.innerHTML = `
-        <div class="goal-header">
+        <div class="goal-info">
             <h4>${goalTitle}</h4>
-            <button class="btn-delete" onclick="deleteGoal(this)">
-                <i class="ri-delete-bin-line"></i>
-            </button>
-        </div>
-        <div class="goal-details">
-            <p>Target: ${goalTarget}</p>
-            <p>Days Remaining: ${daysRemaining}</p>
+            <p>${goalTarget}</p>
             <div class="progress-bar">
-                <div class="progress-fill" style="width: 0%"></div>
+                <div class="progress" style="width: 0%"></div>
             </div>
         </div>
+        <span class="goal-deadline">${daysRemaining} days left</span>
+        <button class="btn-delete" onclick="deleteGoal(this)">
+            <i class="ri-delete-bin-line"></i>
+        </button>
     `;
 
     // Add the new goal to container
@@ -352,13 +390,22 @@ function addNewGoal() {
     document.getElementById('goalTitle').value = '';
     document.getElementById('goalTarget').value = '';
     document.getElementById('goalDeadline').value = '';
+
+    // Close the modal
+    closeGoalModal();
+
+    // Show success notification
+    showNotification('Goal added successfully');
 }
 
 // Function to delete goal
 function deleteGoal(button) {
-    const goalCard = button.closest('.goal-card');
-    goalCard.remove();
-    saveGoals();
+    const goalItem = button.closest('.goal-item');
+    if (goalItem) {
+        goalItem.remove();
+        saveGoals();
+        showNotification('Goal deleted successfully');
+    }
 }
 
 // Function to save goals to localStorage
@@ -366,14 +413,20 @@ function saveGoals() {
     const goalsContainer = document.getElementById('goalsContainer');
     const goals = [];
     
-    goalsContainer.querySelectorAll('.goal-card').forEach(goalCard => {
+    // Get all goal cards and extract their data
+    goalsContainer.querySelectorAll('.goal-item').forEach(goalCard => {
+        const title = goalCard.querySelector('h4').textContent;
+        const target = goalCard.querySelector('p').textContent;
+        const deadline = goalCard.getAttribute('data-deadline');
+        
         goals.push({
-            title: goalCard.querySelector('h4').textContent,
-            target: goalCard.querySelector('.goal-details p:first-child').textContent.replace('Target: ', ''),
-            daysRemaining: parseInt(goalCard.querySelector('.goal-details p:last-of-type').textContent.replace('Days Remaining: ', ''))
+            title: title,
+            target: target,
+            deadline: deadline
         });
     });
 
+    // Save to localStorage
     localStorage.setItem('fitnessGoals', JSON.stringify(goals));
 }
 
@@ -383,25 +436,32 @@ function loadGoals() {
     if (savedGoals) {
         const goals = JSON.parse(savedGoals);
         const goalsContainer = document.getElementById('goalsContainer');
+        goalsContainer.innerHTML = ''; // Clear existing goals
         
         goals.forEach(goal => {
+            // Calculate days remaining
+            const today = new Date();
+            const deadline = new Date(goal.deadline);
+            const daysRemaining = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+            
             const goalElement = document.createElement('div');
-            goalElement.className = 'goal-card';
+            goalElement.className = 'goal-item';
+            goalElement.setAttribute('data-deadline', goal.deadline);
+            
             goalElement.innerHTML = `
-                <div class="goal-header">
+                <div class="goal-info">
                     <h4>${goal.title}</h4>
-                    <button class="btn-delete" onclick="deleteGoal(this)">
-                        <i class="ri-delete-bin-line"></i>
-                    </button>
-                </div>
-                <div class="goal-details">
-                    <p>Target: ${goal.target}</p>
-                    <p>Days Remaining: ${goal.daysRemaining}</p>
+                    <p>${goal.target}</p>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
+                        <div class="progress" style="width: 0%"></div>
                     </div>
                 </div>
+                <span class="goal-deadline">${daysRemaining} days left</span>
+                <button class="btn-delete" onclick="deleteGoal(this)">
+                    <i class="ri-delete-bin-line"></i>
+                </button>
             `;
+            
             goalsContainer.appendChild(goalElement);
         });
     }
@@ -518,41 +578,45 @@ function calculateBMI(weight, height) {
 function loadProfile() {
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
-        const profile = JSON.parse(savedProfile);
-        
-        // Set form values
-        document.getElementById('userName').value = profile.name;
-        document.getElementById('userAge').value = profile.age;
-        document.getElementById('userWeight').value = profile.weight;
-        document.getElementById('userHeight').value = profile.height;
-
-        // Update dashboard display
-        document.querySelector('.profile-summary h3').textContent = profile.name;
-        document.getElementById('displayAge').textContent = profile.age;
-        document.getElementById('displayWeight').textContent = `${profile.weight} kg`;
-        document.getElementById('displayHeight').textContent = `${profile.height} cm`;
-        
-        const bmi = calculateBMI(profile.weight, profile.height);
-        document.getElementById('displayBMI').textContent = bmi.toFixed(1);
+        try {
+            const profile = JSON.parse(savedProfile);
+            
+            // Update profile summary
+            document.querySelector('.profile-summary h3').textContent = profile.userName || 'Your Name';
+            
+            // Update stats display
+            document.getElementById('displayAge').textContent = profile.age || '0';
+            document.getElementById('displayWeight').textContent = `${profile.weight || '0'} kg`;
+            document.getElementById('displayHeight').textContent = `${profile.height || '0'} cm`;
+            
+            // Update profile images
+            if (profile.profileImage) {
+                const profileImages = document.querySelectorAll('.profile-image');
+                const imagePreview = document.getElementById('imagePreview');
+                
+                profileImages.forEach(img => {
+                    img.src = profile.profileImage;
+                });
+                
+                if (imagePreview) {
+                    imagePreview.src = profile.profileImage;
+                }
+            }
+            
+            // Calculate and update BMI
+            if (profile.weight && profile.height) {
+                const bmi = calculateBMI(profile.weight, profile.height);
+                document.getElementById('displayBMI').textContent = bmi.toFixed(1);
+            }
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            showNotification('Error loading profile', 'error');
+        }
     }
 }
 
 // Call loadProfile when page loads
 document.addEventListener('DOMContentLoaded', loadProfile);
-
-    
-
-
-function showWorkoutInput() {
-    document.getElementById("workoutInput").style.display = "block";
-}
-function showWorkoutInput() {
-    document.getElementById("workoutInput").style.display = "block";
-}
-
-function hideWorkoutInput() {
-    document.getElementById("workoutInput").style.display = "none";
-}
 
 function showWorkoutInput() {
     document.getElementById("workoutInput").style.display = "block";
@@ -664,4 +728,56 @@ function openChatbot() {
     window.location.href = 'https://chatgpt.com/'; // Replace with the actual URL of your chatbot page
   }
 
+
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Load existing goals
+    loadGoals();
+
+    // Add click event listeners for goal modal
+    const addGoalBtn = document.querySelector('[onclick="showGoalModal()"]');
+    if (addGoalBtn) {
+        addGoalBtn.addEventListener('click', showGoalModal);
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const goalModal = document.getElementById('goalModal');
+        if (event.target === goalModal) {
+            closeGoalModal();
+        }
+    };
+
+    // Add submit event listener to goal form
+    const goalForm = document.getElementById('goalForm');
+    if (goalForm) {
+        goalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addNewGoal();
+        });
+    }
+
+    // Add click event listeners for goal cards
+    document.getElementById('goalsContainer').addEventListener('click', function(e) {
+        if (e.target.closest('.goal-item')) {
+            const goalCard = e.target.closest('.goal-item');
+            if (!e.target.closest('.btn-delete')) {
+                editGoal(goalCard);
+            }
+        }
+    });
+});
+
+// Function to show notification
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
 
