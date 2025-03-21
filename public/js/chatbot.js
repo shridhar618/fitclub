@@ -1,6 +1,9 @@
 document.getElementById('theme-toggle').addEventListener('click', function () {
     document.body.classList.toggle('light-theme');
     document.body.classList.toggle('dark-theme');
+
+    // Toggle icon between sun (☀️) and moon (🌙)
+    this.textContent = document.body.classList.contains('dark-theme') ? '🌙' : '☀️';
 });
 
 document.getElementById('send-btn').addEventListener('click', sendMessage);
@@ -17,14 +20,30 @@ async function sendMessage() {
     appendMessage('user', message);
     inputField.value = '';
 
-    const response = await fetch('/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
-    });
+    // Show loading indicator
+    const loadingMessage = appendMessage('bot', '⏳ Thinking...');
 
-    const data = await response.json();
-    appendMessage('bot', data.reply);
+    try {
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        
+        // Remove loading message
+        loadingMessage.remove();
+
+        appendMessage('bot', data.reply);
+    } catch (error) {
+        console.error("Error:", error);
+        
+        // Remove loading message
+        loadingMessage.remove();
+
+        appendMessage('bot', '❌ Oops! Something went wrong.');
+    }
 }
 
 function appendMessage(sender, text) {
@@ -33,5 +52,9 @@ function appendMessage(sender, text) {
     messageDiv.classList.add('message', sender);
     messageDiv.textContent = text;
     chatbox.appendChild(messageDiv);
-    chatbox.scrollTop = chatbox.scrollHeight;
+
+    // Smooth auto-scroll
+    chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
+
+    return messageDiv; // Return message element for removing later
 }

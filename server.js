@@ -9,6 +9,8 @@ const SQLiteStore = require('connect-sqlite3')(session);
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const multer = require('multer');
+const sharp = require('sharp');
 
 // Load environment variables
 dotenv.config();
@@ -35,6 +37,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+// Configure multer for file upload
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Not an image! Please upload an image.'), false);
+        }
+    }
+});
+
 // Initialize single SQLite database instance
 const db = new sqlite3.Database(path.join(dbDirectory, 'fitclub.db'), sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
     if (err) {
@@ -57,25 +75,6 @@ const db = new sqlite3.Database(path.join(dbDirectory, 'fitclub.db'), sqlite3.OP
                 console.error('Error creating users table:', err);
             } else {
                 console.log('Users table ready');
-                
-                // Add a test user (password: test123)
-                const testEmail = 'test@test.com';
-                bcrypt.hash('test123', 10, (err, hash) => {
-                    if (err) {
-                        console.error('Error creating test user:', err);
-                        return;
-                    }
-                    db.run(`
-                        INSERT OR REPLACE INTO users (email, password, name) 
-                        VALUES (?, ?, ?)
-                    `, [testEmail, hash, 'Test User'], (err) => {
-                        if (err) {
-                            console.error('Error inserting test user:', err);
-                        } else {
-                            console.log('Test user created successfully');
-                        }
-                    });
-                });
             }
         });
     }
@@ -523,10 +522,154 @@ app.get('/api/user/profile', authenticateUser, (req, res) => {
     });
 });
 
-// Dashboard routes
-app.get('/dashboard', authenticateUser, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+// Get profile details
+app.get('/api/user/profile', authenticateUser, (req, res) => {
+    db.get(`
+        SELECT 
+            u.id, u.email, u.created_at,
+            p.name, p.age, p.weight, p.height, p.goals, 
+            p.profile_picture
+        FROM users u
+        LEFT JOIN profiles p ON u.id = p.user_id
+        WHERE u.id = ?
+    `, [req.user.id], (err, profile) => {
+        if (err) {
+            console.error('Error fetching profile:', err);
+            return res.status(500).json({ error: 'Failed to fetch profile' });
+        }
+        
+        if (profile && profile.profile_picture) {
+            // Convert BLOB to base64 for sending to client
+            profile.profile_picture = `data:image/jpeg;base64,${profile.profile_picture.toString('base64')}`;
+        }
+        
+        res.json(profile);
+    });
 });
+
+// Update profile
+app.post('/api/user/profile', authenticateUser, async (req, res) => {
+    try {
+        const { name, age, weight, height, goals } = req.body;
+        
+        // Validate input
+        if (!name || !age || !weight || !height) {
+            return res.status(400).json({ 
+                error: 'Missing required fields' 
+            });
+        }
+
+        // Update or insert profile
+        db.run(`
+            INSERT INTO profiles (
+                user_id, name, age, weight, height, goals, 
+                updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(user_id) DO UPDATE SET
+                name = excluded.name,
+                age = excluded.age,
+                weight = excluded.weight,
+                height = excluded.height,
+                goals = excluded.goals,
+                updated_at = CURRENT_TIMESTAMP
+        `, [
+            req.user.id, name, age, weight, height, goals
+        ], function(err) {
+            if (err) {
+                console.error('Error updating profile:', err);
+                return res.status(500).json({ error: 'Failed to update profile' });
+            }
+
+            // Fetch and return updated profile
+            db.get(`
+                SELECT 
+                    u.id, u.email,
+                    p.name, p.age, p.weight, p.height, p.goals,
+                    p.profile_picture, p.updated_at
+                FROM users u
+                LEFT JOIN profiles p ON u.id = p.user_id
+                WHERE u.id = ?
+            `, [req.user.id], (err, profile) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to fetch updated profile' });
+                }
+
+                if (profile && profile.profile_picture) {
+                    profile.profile_picture = `data:image/jpeg;base64,${profile.profile_picture.toString('base64')}`;
+                }
+
+                res.json(profile);
+            });
+        });
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({ error: 'Failed to process profile update' });
+    }
+});
+
+// Get profile
+app.get('/api/user/profile', authenticateUser, (req, res) => {
+    db.get(`
+        SELECT 
+            u.id, u.email,
+            p.name, p.age, p.weight, p.height, p.goals,
+            p.profile_picture, p.updated_at
+        FROM users u
+        LEFT JOIN profiles p ON u.id = p.user_id
+        WHERE u.id = ?
+    `, [req.user.id], (err, profile) => {
+        if (err) {
+            console.error('Error fetching profile:', err);
+            return res.status(500).json({ error: 'Failed to fetch profile' });
+        }
+        
+        if (profile && profile.profile_picture) {
+            profile.profile_picture = `data:image/jpeg;base64,${profile.profile_picture.toString('base64')}`;
+        }
+        
+        res.json(profile || { id: req.user.id, email: req.user.email });
+    });
+});
+
+// Upload profile picture
+app.post('/api/user/profile-image', authenticateUser, upload.single('profileImage'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    try {
+        // Process image
+        const processedImage = await sharp(req.file.buffer)
+            .resize(300, 300, {
+                fit: 'cover',
+                position: 'center'
+            })
+            .jpeg({ quality: 80 })
+            .toBuffer();
+
+        // Update profile picture
+        db.run(`
+            UPDATE profiles 
+            SET profile_picture = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE user_id = ?
+        `, [processedImage, req.user.id], function(err) {
+            if (err) {
+                console.error('Error updating profile picture:', err);
+                return res.status(500).json({ error: 'Failed to update profile picture' });
+            }
+
+            res.json({ 
+                success: true,
+                profile_picture: `data:image/jpeg;base64,${processedImage.toString('base64')}`
+            });
+        });
+    } catch (error) {
+        console.error('Profile picture update error:', error);
+        res.status(500).json({ error: 'Failed to process profile picture' });
+    }
+});
+
+// Dashboard routes
 
 // Admin page route
 app.get('/admin', (req, res) => {
