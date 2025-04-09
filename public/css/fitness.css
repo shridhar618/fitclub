@@ -1080,10 +1080,62 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+.chart-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
+#metricSelect {
+    padding: 0.5rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+}
 
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
+.date-range button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 1.2rem;
+}
 
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.stat-box {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
 /* From Uiverse.io by Spacious74 */ 
 button {
     font-size: 1em;

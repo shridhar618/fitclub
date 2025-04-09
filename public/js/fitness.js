@@ -89,42 +89,141 @@ function updateChartColors() {
     }
 }
 
-// Initialize chart with theme-aware colors
-const ctx = document.getElementById('progressChart').getContext('2d');
-window.myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-        datasets: [{
-            label: 'Weight Progress',
-            data: [75, 74.2, 73.5, 72.8],
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-        }]
+// Progress Chart Configuration
+const chartConfig = {
+    weight: {
+        label: 'Weight (kg)',
+        color: 'rgb(75, 192, 192)',
+        unit: 'kg'
     },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                labels: {
-                    color: body.getAttribute('data-theme') === 'dark' ? '#fff' : '#666'
-                }
-            }
+    steps: {
+        label: 'Steps',
+        color: 'rgb(255, 159, 64)',
+        unit: 'steps'
+    },
+    calories: {
+        label: 'Calories Burned',
+        color: 'rgb(255, 99, 132)',
+        unit: 'kcal'
+    },
+    water: {
+        label: 'Water Intake',
+        color: 'rgb(54, 162, 235)',
+        unit: 'L'
+    }
+};
+
+// Initialize date range
+let currentWeekStart = moment().startOf('week');
+
+// Initialize progress chart
+function initProgressChart() {
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: generateDateLabels(),
+            datasets: [{
+                label: 'Weight Progress',
+                data: [],
+                borderColor: chartConfig.weight.color,
+                tension: 0.1
+            }]
         },
-        scales: {
-            x: {
-                ticks: {
-                    color: body.getAttribute('data-theme') === 'dark' ? '#fff' : '#666'
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: body.getAttribute('data-theme') === 'dark' ? '#fff' : '#666'
+                    }
                 }
             },
-            y: {
-                ticks: {
-                    color: body.getAttribute('data-theme') === 'dark' ? '#fff' : '#666'
+            scales: {
+                x: {
+                    ticks: {
+                        color: body.getAttribute('data-theme') === 'dark' ? '#fff' : '#666'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: body.getAttribute('data-theme') === 'dark' ? '#fff' : '#666'
+                    }
                 }
             }
         }
+    });
+}
+
+// Generate date labels for the chart
+function generateDateLabels() {
+    return Array.from({length: 7}, (_, i) => {
+        return moment(currentWeekStart).add(i, 'days').format('ddd DD');
+    });
+}
+
+// Update chart data
+async function updateChartData(metric = 'weight') {
+    try {
+        const response = await fetch(`/api/progress/${metric}?start=${currentWeekStart.format('YYYY-MM-DD')}`);
+        const data = await response.json();
+        
+        const values = data.values || Array(7).fill(null);
+        
+        // Update chart
+        window.myChart.data.datasets[0].label = chartConfig[metric].label;
+        window.myChart.data.datasets[0].borderColor = chartConfig[metric].color;
+        window.myChart.data.datasets[0].data = values;
+        window.myChart.update();
+
+        // Update statistics
+        updateStats(values);
+    } catch (error) {
+        console.error('Error fetching progress data:', error);
     }
+}
+
+// Update statistics
+function updateStats(values) {
+    const validValues = values.filter(v => v !== null);
+    if (validValues.length === 0) return;
+
+    const avg = validValues.reduce((a, b) => a + b, 0) / validValues.length;
+    const max = Math.max(...validValues);
+    const min = Math.min(...validValues);
+    const progress = ((validValues[validValues.length - 1] - validValues[0]) / validValues[0] * 100).toFixed(1);
+
+    document.getElementById('avgValue').textContent = `${avg.toFixed(1)}`;
+    document.getElementById('maxValue').textContent = `${max.toFixed(1)}`;
+    document.getElementById('minValue').textContent = `${min.toFixed(1)}`;
+    document.getElementById('progressValue').textContent = `${progress}%`;
+}
+
+// Event Listeners
+document.getElementById('metricSelect').addEventListener('change', (e) => {
+    updateChartData(e.target.value);
+});
+
+document.getElementById('prevWeek').addEventListener('click', () => {
+    currentWeekStart.subtract(1, 'week');
+    document.getElementById('dateRange').textContent = `${currentWeekStart.format('MMM DD')} - ${currentWeekStart.clone().add(6, 'days').format('MMM DD')}`;
+    window.myChart.data.labels = generateDateLabels();
+    updateChartData(document.getElementById('metricSelect').value);
+});
+
+document.getElementById('nextWeek').addEventListener('click', () => {
+    currentWeekStart.add(1, 'week');
+    document.getElementById('dateRange').textContent = `${currentWeekStart.format('MMM DD')} - ${currentWeekStart.clone().add(6, 'days').format('MMM DD')}`;
+    window.myChart.data.labels = generateDateLabels();
+    updateChartData(document.getElementById('metricSelect').value);
+});
+
+// Initialize chart on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initProgressChart();
+    updateChartData();
+    document.getElementById('dateRange').textContent = `${currentWeekStart.format('MMM DD')} - ${currentWeekStart.clone().add(6, 'days').format('MMM DD')}`;
 });
 
 // Update chart colors when theme changes
@@ -725,7 +824,7 @@ function updateProgress(newData) {
 
 
 function openChatbot() {
-    window.location.href = 'https://chatgpt.com/'; // Replace with the actual URL of your chatbot page
+    window.location.href = 'https://flask-chatbot-3-pl35.onrender.com/'; // Replace with the actual URL of your chatbot page
   }
 
 

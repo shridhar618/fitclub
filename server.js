@@ -787,6 +787,24 @@ if (process.env.GEMINI_API_KEY) {
     console.warn("GEMINI_API_KEY not found in environment variables. Chat functionality will not work.");
 }
 
+// Progress data route
+app.get('/api/progress/:metric', authenticateUser, (req, res) => {
+    const { metric } = req.params;
+    const startDate = req.query.start;
+    
+    // Sample data - replace with actual database query
+    const sampleData = {
+        weight: [75, 74.5, 74.2, 74.0, 73.8, 73.5, 73.2],
+        steps: [8000, 8500, 9000, 8200, 8800, 9200, 8900],
+        calories: [400, 450, 420, 380, 460, 440, 420],
+        water: [2.1, 2.3, 2.0, 2.2, 2.4, 2.1, 2.3]
+    };
+
+    res.json({
+        values: sampleData[metric] || Array(7).fill(null)
+    });
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
