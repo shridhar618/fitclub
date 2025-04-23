@@ -4,405 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .admin-container {
-            min-height: 100vh;
-            background: linear-gradient(rgb(25, 24, 24), rgb(53, 52, 52));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-xl);
-        }
-
-        .admin-login {
-            max-width: 450px;
-            width: 100%;
-            padding: var(--spacing-xl);
-            background: rgba(230, 226, 226, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius-lg);
-        }
-
-        .admin-login h2 {
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-lg);
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-size: 1rem;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            z-index: 1000;
-        }
-
-        .admin-panel {
-            display: none;
-            width: 100%;
-            min-height: 100vh;
-            background-color: var(--gray-100);
-        }
-
-        .admin-header {
-            background: var(--white);
-            padding: var(--spacing-lg);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius-md);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--white);
-            border-radius: var(--border-radius-md);
-        }
-
-        .users-table th,
-        .users-table td {
-            padding: var(--spacing-md);
-            text-align: left;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .delete-btn {
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: var(--spacing-xl);
-            color: var(--gray-500);
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .users-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <!-- Admin Login Form -->
-    <div class="admin-container" id="adminLogin">
-        <div class="admin-login">
-            <h2><i class="fas fa-lock"></i> Admin Login</h2>
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <input type="text" id="adminId" name="adminId" class="form-input" placeholder="Admin ID" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="adminPassword" name="password" class="form-input" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-header">
-            <div class="container">
-                <div class="header-content">
-                    <h2><i class="fas fa-dashboard"></i> Admin Dashboard</h2>
-                    <button class="btn btn-secondary" id="adminLogout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
+    <!-- Admin Panel Section -->
+    <div id="adminPanel">
+        <nav class="admin-nav">
+            <h1>Admin Dashboard</h1>
+        </nav>
+        
+        <div class="admin-content">
+            <div class="stats-container">
+                <!-- Your stats content -->
             </div>
-        </div>
-
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h4>Total Users</h4>
-                    <div class="number" id="totalUsers">0</div>
+            
+            <div class="users-container">
+                <h2>Users Management</h2>
+                <div class="table-container">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- User data will be inserted here -->
+                        </tbody>
+                    </table>
                 </div>
-                <div class="stat-card">
-                    <h4>New Users (Today)</h4>
-                    <div class="number" id="newUsers">0</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Active Users</h4>
-                    <div class="number" id="activeUsers">0</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3><i class="fas fa-users"></i> Registered Users</h3>
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Joined Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <!-- User data will be populated here -->
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 
     <script>
-        const adminLoginDiv = document.getElementById('adminLogin');
-        const adminPanelDiv = document.getElementById('adminPanel');
-        const adminLoginForm = document.getElementById('adminLoginForm');
-
-        // Add loading indicator function
-        function showLoading(show = true) {
-            let loader = document.querySelector('.loading');
-            if (!loader) {
-                loader = document.createElement('div');
-                loader.className = 'loading';
-                loader.innerHTML = 'Loading...';
-                document.body.appendChild(loader);
-            }
-            loader.style.display = show ? 'block' : 'none';
-        }
-
-        // Handle admin login form submission
-        adminLoginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading(true);
-
-            try {
-                const response = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        adminId: document.getElementById('adminId').value,
-                        password: document.getElementById('adminPassword').value
-                    }),
-                    credentials: 'include'
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    localStorage.setItem('adminLoggedIn', 'true');
-                    showAdminPanel();
-                } else {
-                    alert(data.error || 'Login failed');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                alert('Login failed. Please try again.');
-            } finally {
-                showLoading(false);
-            }
-        });
-
-        let sessionCheckInterval;
-
-        async function checkAdminSession() {
-            try {
-                const response = await fetch('/api/admin/check-session', {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
-                    }
-                });
-
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    if (response.status === 401 || data.sessionExpired) {
-                        handleSessionExpired();
-                        return false;
-                    }
-                    throw new Error(`Session check failed: ${data.error || 'Unknown error'}`);
-                }
-                
-                return data.isAuthenticated;
-            } catch (error) {
-                console.error('Session check error:', error);
-                if (error.message.includes('Failed to fetch') || 
-                    error.message.includes('Session expired')) {
-                    handleSessionExpired();
-                }
-                return false;
-            }
-        }
-
-        function startSessionCheck() {
-            sessionCheckInterval = setInterval(async () => {
-                const isAuthenticated = await checkAdminSession();
-                if (!isAuthenticated) {
-                    stopSessionCheck();
-                    handleSessionExpired();
-                }
-            }, 5 * 60 * 1000); // Check every 5 minutes
-        }
-
-        function stopSessionCheck() {
-            if (sessionCheckInterval) {
-                clearInterval(sessionCheckInterval);
-                sessionCheckInterval = null;
-            }
-        }
-
-        function handleSessionExpired() {
-            stopSessionCheck();
-            localStorage.removeItem('adminLoggedIn');
-            
-            // Clear any existing admin data
-            if (adminPanelDiv) {
-                adminPanelDiv.innerHTML = '';
-            }
-            
-            hideAdminPanel();
-            
-            // Show a more user-friendly message
-            const message = 'Your session has expired due to inactivity. Please login again to continue.';
-            alert(message);
-            
-            // Force reload to clear any cached state
-            window.location.replace('/admin.html');
-        }
-
-        function showAdminPanel() {
-            if (adminLoginDiv && adminPanelDiv) {
-                adminLoginDiv.style.display = 'none';
-                adminPanelDiv.style.display = 'block';
-                adminPanelDiv.classList.add('active');
-                
-                startSessionCheck();
-                
-                Promise.all([
-                    loadUsers(),
-                    updateStats()
-                ]).catch(error => {
-                    console.error('Error loading initial data:', error);
-                    handleSessionError(error);
-                });
-            }
-        }
-
-        function hideAdminPanel() {
-            if (adminLoginDiv && adminPanelDiv) {
-                adminLoginDiv.style.display = 'flex';
-                adminPanelDiv.style.display = 'none';
-                adminPanelDiv.classList.remove('active');
-                adminLoginForm.reset();
-                stopSessionCheck();
-            }
-        }
-
-        document.getElementById('adminLogout').addEventListener('click', async function() {
-            try {
-                const response = await fetch('/api/admin/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Logout failed');
-                }
-
-                stopSessionCheck();
-                localStorage.removeItem('adminLoggedIn');
-                hideAdminPanel();
-            } catch (error) {
-                console.error('Logout error:', error);
-                handleSessionExpired();
-            }
-        });
-
-        // Check admin session on page load
-        document.addEventListener('DOMContentLoaded', async function() {
-            showLoading(true);
-            try {
-                if (localStorage.getItem('adminLoggedIn') === 'true') {
-                    const isAuthenticated = await checkAdminSession();
-                    if (isAuthenticated) {
-                        showAdminPanel();
-                    } else {
-                        localStorage.removeItem('adminLoggedIn');
-                        hideAdminPanel();
-                    }
-                } else {
-                    hideAdminPanel();
-                }
-            } catch (error) {
-                console.error('Session check error:', error);
-                hideAdminPanel();
-            } finally {
-                showLoading(false);
-            }
-        });
-
         async function loadUsers() {
             try {
                 const response = await fetch('/api/users', {
                     credentials: 'include'
                 });
+                
                 if (!response.ok) {
                     throw new Error('Failed to fetch users');
                 }
@@ -440,7 +83,7 @@
                 }
             } catch (error) {
                 console.error('Error loading users:', error);
-                handleSessionError(error);
+                alert('Error loading users. Please refresh the page.');
             }
         }
 
@@ -460,38 +103,73 @@
                     updateStats();
                 } catch (error) {
                     console.error('Error deleting user:', error);
-                    handleSessionError(error);
+                    alert('Error deleting user. Please try again.');
                 }
             }
         }
 
-        async function updateStats() {
-            try {
-                const response = await fetch('/api/stats', {
-                    credentials: 'include'
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch stats');
-                }
-                
-                const stats = await response.json();
-                
-                document.getElementById('totalUsers').textContent = stats.total_users || 0;
-                document.getElementById('newUsers').textContent = stats.new_users_today || 0;
-                document.getElementById('activeUsers').textContent = stats.active_users || 0;
-            } catch (error) {
-                console.error('Error updating stats:', error);
-                handleSessionError(error);
-            }
-        }
+        // Load initial data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            Promise.all([
+                loadUsers(),
+                updateStats()
+            ]).catch(error => {
+                console.error('Error loading initial data:', error);
+                alert('Error loading data. Please refresh the page.');
+            });
+        });
 
-        function handleSessionError(error) {
-            if (error.message.includes('Failed to fetch') || 
-                error.message.includes('401') || 
-                error.message.includes('Session expired')) {
-                handleSessionExpired();
+        // Styles
+        const styles = `
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
             }
-        }
+            .admin-nav {
+                background: #333;
+                color: white;
+                padding: 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .admin-content {
+                padding: 2rem;
+            }
+            .table-container {
+                overflow-x: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+            }
+            th, td {
+                padding: 0.75rem;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #f5f5f5;
+            }
+            .delete-btn {
+                background: #ff4444;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            .delete-btn:hover {
+                background: #cc0000;
+            }
+        `;
+
+        // Add styles to document
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = styles;
+        document.head.appendChild(styleSheet);
     </script>
 </body>
 </html>

@@ -80,23 +80,23 @@ const db = new sqlite3.Database(path.join(dbDirectory, 'fitclub.db'), sqlite3.OP
     }
 });
 
-// Session middleware configuration
+// Session configuration
 app.use(session({
     store: new SQLiteStore({
         dir: dbDirectory,
         db: 'sessions.db',
         table: 'sessions'
     }),
-    name: 'sessionId',
     secret: process.env.SESSION_SECRET || 'your-secret-key',
+    name: 'admin.sid',
     resave: false,
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 30 * 60 * 1000 // 30 minutes
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        sameSite: 'lax'
     }
 }));
 
@@ -109,10 +109,11 @@ app.use((req, res, next) => {
 });
 
 // Session activity middleware
+/* 
 app.use((req, res, next) => {
     if (req.session) {
         if (req.session.lastActivity && 
-            Date.now() - req.session.lastActivity > (30 * 60 * 1000)) { // 30 minutes
+            Date.now() - req.session.lastActivity > (30 * 60 * 1000)) {
             return req.session.destroy(() => {
                 res.status(401).json({ 
                     error: 'Session expired',
@@ -124,6 +125,7 @@ app.use((req, res, next) => {
     }
     next();
 });
+*/
 
 // Function to get database connection
 function getDb() {
@@ -146,107 +148,17 @@ const authenticateUser = (req, res, next) => {
 
 // Admin authentication middleware
 const authenticateAdmin = (req, res, next) => {
-    if (!req.session || !req.session.isAdmin) {
-        return res.status(401).json({ 
-            error: 'Not authorized',
-            sessionExpired: true
-        });
-    }
-    
-    // Update last activity
-    req.session.lastActivity = Date.now();
+    // Always allow access
     next();
 };
 
-// Admin login endpoint
-app.post('/api/admin/login', async (req, res) => {
-    const { adminId, password } = req.body;
-    
-    if (adminId === process.env.ADMIN_ID && password === process.env.ADMIN_PASSWORD) {
-        try {
-            await new Promise((resolve, reject) => {
-                req.session.regenerate((err) => {
-                    if (err) reject(err);
-                    else resolve();
-                });
-            });
-
-            req.session.isAdmin = true;
-            req.session.adminId = adminId;
-            req.session.lastActivity = Date.now();
-
-            await new Promise((resolve, reject) => {
-                req.session.save((err) => {
-                    if (err) reject(err);
-                    else resolve();
-                });
-            });
-
-            res.json({ 
-                success: true,
-                message: 'Admin login successful'
-            });
-        } catch (error) {
-            console.error('Login error:', error);
-            res.status(500).json({ 
-                success: false,
-                error: 'Internal server error' 
-            });
-        }
-    } else {
-        res.status(401).json({ 
-            success: false,
-            error: 'Invalid credentials' 
-        });
-    }
+// Admin page route - should be before other static routes
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Admin check session endpoint
-app.get('/api/admin/check-session', (req, res) => {
-    console.log('Session check:', {
-        sessionId: req.sessionID,
-        session: req.session
-    });
-
-    if (!req.session || !req.session.isAdmin) {
-        return res.status(401).json({ 
-            isAuthenticated: false,
-            error: 'Session expired or invalid',
-            sessionExpired: true
-        });
-    }
-
-    // Update last activity
-    req.session.lastActivity = Date.now();
-    req.session.save((err) => {
-        if (err) {
-            console.error('Session save error:', err);
-            return res.status(500).json({ 
-                isAuthenticated: false,
-                error: 'Session error'
-            });
-        }
-        res.json({ isAuthenticated: true });
-    });
-});
-
-// Admin logout endpoint
-app.post('/api/admin/logout', (req, res) => {
-    if (req.session) {
-        req.session.destroy((err) => {
-            if (err) {
-                console.error('Logout error:', err);
-                return res.status(500).json({ 
-                    success: false,
-                    error: 'Logout failed'
-                });
-            }
-            res.json({ success: true });
-        });
-    } else {
-        res.json({ success: true });
-    }
-});
+// Serve static files
+app.use(express.static('public'));
 
 // Routes
 app.get('/', (req, res) => {
@@ -670,11 +582,6 @@ app.post('/api/user/profile-image', authenticateUser, upload.single('profileImag
 });
 
 // Dashboard routes
-
-// Admin page route
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
 
 // API route to get all users
 app.get('/api/users', authenticateAdmin, (req, res) => {
