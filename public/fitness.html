@@ -5,343 +5,628 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitClub - Your Fitness Journey</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/chart.js" rel="stylesheet" />
-    <link rel="stylesheet" href="./css/fitness.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-
 </head>
-<body>
-
-    <!-- Header Section -->
-    <header class="header">
-        <div class="header-container">
-            <div class="logo">
-                <h1>Fit<span>Club</span></h1>
-            </div>
-            <nav class="nav-menu">
-                <ul class="nav-list">
-                    <li><a href="./index.html" class="nav-link active">
-                        <i class="ri-home-4-line"></i>
-                        <span>Home</span>
-                    </a></li>
-                  
-                    <li><a href="dashboard.html" class="nav-link">
-                        <i class="ri-dashboard-line"></i>
-                        <span>Dashboard</span>
-                    </a></li>
-                    <li><a href="#nutrition" class="nav-link">
-                        <i class="ri-restaurant-line"></i>
-                        <span>Nutrition</span>
-                    </a></li>
-                    <li><a href="index.html" class="nav-link">
-                        <i class="ri-customer-service-2-line"></i>
-                        <span>Chat With Trainer</span>
-                    </a></li>
-                </ul>
-            </nav>
-            <div class="nav-buttons">
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="ri-contrast-2-line"></i>
-                </button>
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="ri-menu-line"></i>
-                </button>
-            </div>
+<body data-theme="dark">
+    <nav>
+        <div class="nav__logo">
+            <a href="./index.html">FITCLUB</a>
         </div>
-    </header>
-
-    <!-- Chatbot fixed button -->
-     <!-- From Uiverse.io by Spacious74 --> 
-    <div class="container">
-        <button onclick="openChatbot()" class="button">Chat-Bot</button>
-    </div>
-  
+        <ul class="nav__links">
+            <li class="link"><a href="index.html">Home</a></li>
+            <li class="link"><a href="#programs">Programs</a></li>
+            <li class="link"><a href="dashboard.html">Dashboard</a></li>
+            <li class="link"><a href="#about">About</a></li>
+            <li class="link"><a href="#contact">Chat with Trainer</a></li>
+        </ul>
+        <div class="theme__toggle">
+            <button class="theme-btn" id="themeToggle">
+                <i class="ri-contrast-2-line"></i>
+            </button>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Transform Your Body,<br>Transform Your Life</h1>
-                <p class="hero-text">Start your fitness journey today with personalized workouts, nutrition tracking, and expert guidance.</p>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">500+</span>
-                        <p class="stat-text">Active Members</p>
+        <div class="section__container hero__container">
+            <div class="hero__content">
+                <h1>Transform Your Body,<br>Transform Your Life</h1>
+                <p>Start your fitness journey today with personalized workouts, nutrition tracking, and expert guidance.</p>
+                <div class="hero__stats">
+                    <div class="stat__item">
+                        <span>500+</span>
+                        <p>Active Members</p>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number">50+</span>
-                        <p class="stat-text">Expert Trainers</p>
+                    <div class="stat__item">
+                        <span>50+</span>
+                        <p>Expert Trainers</p>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-number">100+</span>
-                        <p class="stat-text">Programs</p>
+                    <div class="stat__item">
+                        <span>100+</span>
+                        <p>Programs</p>
                     </div>
                 </div>
-                <div class="hero-buttons">
-                    <a href="#dashboard" class="btn btn-primary">Get Started</a>
-                    <a href="#programs" class="btn btn-outline">View Programs</a>
+                <div class="hero__buttons">
+                    <button class="btn" onclick="scrollToSection('programs')">View Programs</button>
+                    <button class="btn btn__outline" onclick="scrollToSection('dashboard')">Get Started</button>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="./images/class-1.jpg" alt="Fitness Training">
+            <div class="hero__image">
+                <div class="placeholder-image">
+                    <i class="ri-user-fill"></i>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Main Dashboard -->
-    <div class="dashboard" id="dashboard">
-        <!-- Dashboard Navigation -->
-        <div class="dashboard-nav">
-            <button class="dash-nav-btn active" data-tab="overview">Overview</button>
-            <button class="dash-nav-btn" data-tab="progress">Progress</button>
-            <button class="dash-nav-btn" data-tab="schedule">Schedule</button>
-            <button class="dash-nav-btn" data-tab="nutrition">Nutrition</button>
+    <!-- Programs Section -->
+    <section id="programs" class="section__container programs__container">
+        <div class="programs__header">
+            <h2 class="section__header">OUR FITNESS PROGRAMS</h2>
+            <p>Choose the perfect program that matches your fitness goals</p>
         </div>
+        <div class="programs__grid">
+            <div class="programs__card">
+                <div class="placeholder-image">
+                    <i class="ri-boxing-fill"></i>
+                </div>
+                <h4>Strength Training</h4>
+                <p>Build muscle and increase strength with our comprehensive strength training program.</p>
+                <div class="program__details">
+                    <span><i class="ri-time-line"></i> 60 min/session</span>
+                    <span><i class="ri-calendar-line"></i> 3 sessions/week</span>
+                </div>
+                <button class="btn">Enroll Now</button>
+            </div>
+            <div class="programs__card">
+                <div class="placeholder-image">
+                    <i class="ri-heart-pulse-fill"></i>
+                </div>
+                <h4>Cardio Fitness</h4>
+                <p>Improve your cardiovascular health and endurance with our dynamic cardio workouts.</p>
+                <div class="program__details">
+                    <span><i class="ri-time-line"></i> 45 min/session</span>
+                    <span><i class="ri-calendar-line"></i> 4 sessions/week</span>
+                </div>
+                <button class="btn">Enroll Now</button>
+            </div>
+            <div class="programs__card">
+                <div class="placeholder-image">
+                    <i class="ri-run-line"></i>
+                </div>
+                <h4>Weight Loss</h4>
+                <p>Lose weight effectively with our scientifically designed weight loss program.</p>
+                <div class="program__details">
+                    <span><i class="ri-time-line"></i> 50 min/session</span>
+                    <span><i class="ri-calendar-line"></i> 5 sessions/week</span>
+                </div>
+                <button class="btn">Enroll Now</button>
+            </div>
+            <div class="programs__card">
+                <div class="placeholder-image">
+                    <i class="ri-yoga-fill"></i>
+                </div>
+                <h4>Yoga & Flexibility</h4>
+                <p>Enhance your flexibility and find inner peace with our yoga program.</p>
+                <div class="program__details">
+                    <span><i class="ri-time-line"></i> 60 min/session</span>
+                    <span><i class="ri-calendar-line"></i> 3 sessions/week</span>
+                </div>
+                <button class="btn">Enroll Now</button>
+            </div>
+        </div>
+    </section>
 
-        <div class="dashboard-grid">
-            <!-- Quick Stats Row -->
-            <div class="dashboard-card quick-stats">
-                <h1>Minimum-Requirement</h1>
-                <div class="stat-grid">
-                    <div class="stat-item">
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section__container dashboard__container">
+        <h2 class="section__header">Fitness Schedule</h2>
+        <div class="dashboard__grid">
+            <!-- Quick Stats -->
+            <div class="dashboard__card">
+                <h3>Daily Stats</h3>
+                <div class="stats__grid">
+                    <div class="stat__item">
                         <i class="ri-heart-pulse-line"></i>
                         <span>75 BPM</span>
                         <p>Heart Rate</p>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat__item">
                         <i class="ri-footprint-line"></i>
-                        <span id="stepCount">8,432</span>
+                        <span>8,432</span>
                         <p>Steps</p>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat__item">
                         <i class="ri-fire-line"></i>
-                        <span id="calories">420</span>
-                        <p>kcal</p>
+                        <span>420</span>
+                        <p>Calories</p>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat__item">
                         <i class="ri-water-flash-line"></i>
-                        <span id="waterAmount">1.2</span>
-                        <p>Water (L)</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Progress Charts -->
-            <div class="dashboard-card progress-charts">
-                <h3>Weekly Progress</h3>
-                <div class="chart-controls">
-                    <select id="metricSelect">
-                        <option value="weight">Weight</option>
-                        <option value="steps">Steps</option>
-                        <option value="calories">Calories Burned</option>
-                        <option value="water">Water Intake</option>
-                    </select>
-                    <div class="date-range">
-                        <button id="prevWeek"><i class="ri-arrow-left-s-line"></i></button>
-                        <span id="dateRange">This Week</span>
-                        <button id="nextWeek"><i class="ri-arrow-right-s-line"></i></button>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="progressChart" width="400" height="200"></canvas>
-                </div>
-                <div class="stats-summary">
-                    <div class="stat-box">
-                        <span class="stat-label">Average</span>
-                        <span id="avgValue" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">Highest</span>
-                        <span id="maxValue" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">Lowest</span>
-                        <span id="minValue" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">Progress</span>
-                        <span id="progressValue" class="stat-value">0%</span>
+                        <span>1.2L</span>
+                        <p>Water</p>
                     </div>
                 </div>
             </div>
 
             <!-- Workout Schedule -->
-            <div class="dashboard-card schedule">
-                <h3>Weekly Schedule</h3>
-                <div class="schedule-grid" id="scheduleGrid">
-                    <div class="schedule-day">
+            <div class="dashboard__card">
+                <h3>Workout Schedule</h3>
+                <div class="schedule__grid">
+                    <div class="schedule__day">
                         <h4>Mon</h4>
-                        <div class="workout-slot" draggable="true">
-                            Upper Body <button class="delete-btn" onclick="deleteWorkout(this)">X</button>
-                        </div>
+                        <div class="workout__slot">Upper Body</div>
                     </div>
-                    <div class="schedule-day">
+                    <div class="schedule__day">
                         <h4>Tue</h4>
-                        <div class="workout-slot" draggable="true">
-                            Cardio <button class="delete-btn" onclick="deleteWorkout(this)">X</button>
-                        </div>
+                        <div class="workout__slot">Cardio</div>
                     </div>
-                </div>
-            
-                <!-- Add Workout Button -->
-                <button class="btn btn-outline" onclick="showWorkoutInput()">Add Workout</button>
-            
-                <!-- Hidden Input Fields -->
-                <div class="input-container" id="workoutInput">
-                    <span class="close-btn" onclick="hideWorkoutInput()">✖</span>
-                    <input type="text" id="dayInput" placeholder="Enter Day (e.g., Mon)">
-                    <input type="text" id="workoutInputField" placeholder="Enter Workout">
-                    <button type="submit" onclick="addWorkout()">Add</button>
-                </div>
-            </div>
-
-            <!-- User Profile Card with improved layout -->
-            <div class="dashboard-card profile-card">
-                <div class="profile-header">
-                    <img src="./images/profile-placeholder.jpg" alt="Profile" class="profile-image">
-                    <div class="profile-summary">
-                        <h3>###</h3>
-                        <p class="profile-status">Premium Member</p>
+                    <div class="schedule__day">
+                        <h4>Wed</h4>
+                        <div class="workout__slot">Rest</div>
                     </div>
-                    <button class="btn-icon" onclick="editProfile()">
-                        <i class="ri-edit-line"></i>
-                    </button>
-                </div>
-                <div class="profile-stats">s
-                    
-                    <div class="stat-row">
-                        <span class="stat-label">Age:</span>
-                        <span id="displayAge">0</span>
+                    <div class="schedule__day">
+                        <h4>Thu</h4>
+                        <div class="workout__slot">Lower Body</div>
                     </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Weight:</span>
-                        <span id="displayWeight">0 kg</span>
+                    <div class="schedule__day">
+                        <h4>Fri</h4>
+                        <div class="workout__slot">HIIT</div>
                     </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Height:</span>
-                        <span id="displayHeight">0 cm</span>
+                    <div class="schedule__day">
+                        <h4>Sat</h4>
+                        <div class="workout__slot">Yoga</div>
                     </div>
-                    <div class="stat-row">
-                        <span class="stat-label">BMI:</span>
-                        <span id="displayBMI">0</span>
+                    <div class="schedule__day">
+                        <h4>Sun</h4>
+                        <div class="workout__slot">Rest</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Enhanced Goals Section -->
-            <div class="dashboard-card goals-card">
-                <div class="card-header">
-                    <h3>Fitness Goals</h3>
-                    <button class="btn-icon" onclick="showGoalModal()">
-                        <i class="ri-add-line"></i>
-                    </button>
-                </div>
-                <div class="goals-list" id="goalsContainer">
-                    <div class="goal-item">
-                        <div class="goal-info">
-                            <h4>Weight Loss</h4>
-                            <p>Target: 70kg</p>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 60%"></div>
-                            </div>
+            <!-- Nutrition Overview -->
+            <div class="dashboard__card">
+                <h3>Nutrition Overview</h3>
+                <div class="nutrition__grid">
+                    <div class="nutrition__item">
+                        <span>Proteins</span>
+                        <div class="progress__bar">
+                            <div class="progress" style="width: 75%"></div>
                         </div>
-                        <span class="goal-deadline">2 weeks left</span>
+                        <span>120g</span>
                     </div>
-                    <!-- More goals will be added dynamically -->
-                </div>
-            </div>
-
-            <!-- Enhanced Nutrition Section -->
-            <div class="dashboard-card nutrition-card">
-                <h3>Minimum Nutrition</h3>
-                <div class="nutrition-overview">
-                    <div class="macro-chart">
-                        <canvas id="macroChart"></canvas>
+                    <div class="nutrition__item">
+                        <span>Carbs</span>
+                        <div class="progress__bar">
+                            <div class="progress" style="width: 60%"></div>
+                        </div>
+                        <span>200g</span>
                     </div>
-                    <div class="nutrition-stats">
-                        <div class="macro-item">
-                            <span class="macro-label">Proteins</span>
-                            <span class="macro-value">120g</span>
+                    <div class="nutrition__item">
+                        <span>Fats</span>
+                        <div class="progress__bar">
+                            <div class="progress" style="width: 45%"></div>
                         </div>
-                        <div class="macro-item">
-                            <span class="macro-label">Carbs</span>
-                            <span class="macro-value">200g</span>
-                        </div>
-                        <div class="macro-item">
-                            <span class="macro-label">Fats</span>
-                            <span class="macro-value">65g</span>
-                        </div>
+                        <span>65g</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Profile Edit Modal -->
-    <div id="profileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeProfileModal()">&times;</span>
-            <h2>Edit Profile</h2>
-            <form id="profileForm" onsubmit="saveProfile(event)">
-                <div class="form-group profile-image-upload">
-                    <div class="image-preview-container">
-                        <img id="imagePreview" src="./images/profile-placeholder.jpg" alt="Profile Preview">
-                        <div class="upload-overlay">
-                            <i class="ri-camera-line"></i>
-                        </div>
-                    </div>
-                    <input type="file" id="profileImage" name="profileImage" accept="image/*" onchange="previewImage(event)">
-                    <label for="profileImage" class="upload-btn">
-                        <i class="ri-upload-2-line"></i>
-                        Change Photo
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label for="userName">Name</label>
-                    <input type="text" id="userName" name="userName" required>
-                </div>
-                <div class="form-group">
-                    <label for="userAge">Age</label>
-                    <input type="number" id="userAge" name="userAge" required>
-                </div>
-                <div class="form-group">
-                    <label for="userWeight">Weight (kg)</label>
-                    <input type="number" id="userWeight" name="userWeight" step="0.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="userHeight">Height (cm)</label>
-                    <input type="number" id="userHeight" name="userHeight" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
+    <!-- Pricing Section -->
+    <section class="section__container pricing__container">
+        <h2 class="section__header">PRICING PLANS</h2>
+        <div class="pricing__grid">
+            <div class="pricing__card">
+                <h4>Basic Plan</h4>
+                <h3>$29</h3>
+                <p>per month</p>
+                <ul>
+                    <li><i class="ri-check-line"></i> Access to basic equipment</li>
+                    <li><i class="ri-check-line"></i> 2 group classes per week</li>
+                    <li><i class="ri-check-line"></i> Locker room access</li>
+                </ul>
+                <button class="btn">Choose Plan</button>
+            </div>
+            <div class="pricing__card">
+                <h4>Premium Plan</h4>
+                <h3>$49</h3>
+                <p>per month</p>
+                <ul>
+                    <li><i class="ri-check-line"></i> Access to all equipment</li>
+                    <li><i class="ri-check-line"></i> Unlimited group classes</li>
+                    <li><i class="ri-check-line"></i> Personal trainer consultation</li>
+                    <li><i class="ri-check-line"></i> Locker room access</li>
+                </ul>
+                <button class="btn">Choose Plan</button>
+            </div>
+            <div class="pricing__card">
+                <h4>Elite Plan</h4>
+                <h3>$79</h3>
+                <p>per month</p>
+                <ul>
+                    <li><i class="ri-check-line"></i> Access to all equipment</li>
+                    <li><i class="ri-check-line"></i> Unlimited group classes</li>
+                    <li><i class="ri-check-line"></i> Personal trainer sessions</li>
+                    <li><i class="ri-check-line"></i> Nutrition consultation</li>
+                    <li><i class="ri-check-line"></i> VIP locker room access</li>
+                </ul>
+                <button class="btn">Choose Plan</button>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Goal Modal -->
-    <div id="goalModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeGoalModal()">&times;</span>
-            <h2>Add New Goal</h2>
-            <form id="goalForm">
-                <div class="form-group">
-                    <label for="goalTitle">Goal Title</label>
-                    <input type="text" id="goalTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="goalTarget">Target</label>
-                    <input type="text" id="goalTarget" required>
-                </div>
-                <div class="form-group">
-                    <label for="goalDeadline">Deadline</label>
-                    <input type="date" id="goalDeadline" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Goal</button>
-            </form>
+    <footer class="section__container footer__container">
+        <span class="bg__blur"></span>
+        <span class="bg__blur footer__blur"></span>
+        <div class="footer__col">
+            <div class="footer__logo">FITCLUB</div>
+            <p>
+                Take the first step towards a healthier, stronger you with our unbeatable pricing plans. Let's sweat, achieve, and conquer together!
+            </p>
+            <div class="footer__socials">
+                <a href="#"><i class="ri-facebook-fill"></i></a>
+                <a href="#"><i class="ri-instagram-line"></i></a>
+                <a href="#"><i class="ri-twitter-fill"></i></a>
+            </div>
         </div>
+        <div class="footer__col">
+            <h4>Company</h4>
+            <a href="#">Business</a>
+            <a href="#">Franchise</a>
+            <a href="#">Partnership</a>
+            <a href="#">Network</a>
+        </div>
+        <div class="footer__col">
+            <h4>About Us</h4>
+            <a href="#">Blogs</a>
+            <a href="#">Security</a>
+            <a href="#">Careers</a>
+        </div>
+        <div class="footer__col">
+            <h4>Contact</h4>
+            <a href="#">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">BMI Calculator</a>
+        </div>
+    </footer>
+    <div class="footer__bar">
+        Copyright © 2025 Shridhar Bhat. All rights reserved.
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="./js/fitness.js"></script>
+    <button id="goToTop" class="go-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+
+    <script>
+        // Theme toggle functionality
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
+
+            themeToggle.onclick = function() {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            };
+        })();
+
+        // Go to top button functionality
+        const goToTopButton = document.getElementById('goToTop');
+        
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                goToTopButton.style.display = "block";
+            } else {
+                goToTopButton.style.display = "none";
+            }
+        };
+
+        goToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+    <style>
+        /* Theme toggle styles */
+        .theme__toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--text-light);
+            color: var(--white);
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .theme-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Light theme colors */
+        [data-theme="light"] {
+            --primary-color: #ffffff;
+            --primary-color-light: #f5f5f5;
+            --primary-color-extra-light: #fafafa;
+            --secondary-color: #f9ac54;
+            --secondary-color-dark: #d79447;
+            --text-light: #666666;
+            --white: #111317;
+            background-color: var(--primary-color);
+        }
+
+        [data-theme="light"] .section__header {
+            color: var(--white);
+        }
+
+        [data-theme="light"] .link a {
+            color: var(--white);
+        }
+
+        [data-theme="light"] p {
+            color: var(--text-light);
+        }
+
+        [data-theme="light"] .theme-btn {
+            color: var(--white);
+            border-color: var(--text-light);
+        }
+
+        [data-theme="light"] .programs__card,
+        [data-theme="light"] .pricing__card,
+        [data-theme="light"] .dashboard__card {
+            background-color: var(--primary-color-light);
+        }
+
+        [data-theme="light"] .footer__container {
+            background-color: var(--primary-color-light);
+        }
+
+        /* Dark theme colors (default) */
+        [data-theme="dark"] {
+            --primary-color: #111317;
+            --primary-color-light: #1f2125;
+            --primary-color-extra-light: #35373b;
+            --secondary-color: #f9ac54;
+            --secondary-color-dark: #d79447;
+            --text-light: #d1d5db;
+            --white: #ffffff;
+            background-color: var(--primary-color);
+        }
+
+        /* Hero section styles */
+        .hero {
+            padding: 5rem 0;
+        }
+
+        .hero__container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero__content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero__stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat__item span {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .hero__buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Programs section styles */
+        .programs__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .programs__card {
+            padding: 1.5rem;
+            background-color: var(--primary-color-light);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .programs__card:hover {
+            transform: translateY(-5px);
+        }
+
+        .program__details {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        /* Dashboard styles */
+        .dashboard__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard__card {
+            padding: 1.5rem;
+            background-color: var(--primary-color-light);
+            border-radius: 10px;
+        }
+
+        .stats__grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .schedule__grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .schedule__day {
+            text-align: center;
+        }
+
+        .workout__slot {
+            background-color: var(--primary-color-extra-light);
+            padding: 0.5rem;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+        }
+
+        .nutrition__grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nutrition__item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress__bar {
+            flex: 1;
+            height: 8px;
+            background-color: var(--primary-color-extra-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        /* Button styles */
+        .btn {
+            padding: 1rem 2rem;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color-dark);
+        }
+
+        .btn__outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .btn__outline:hover {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+        /* Placeholder image styles */
+        .placeholder-image {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color-light);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .placeholder-image i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+        }
+
+        /* Navigation and footer styles */
+        .nav__logo a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .footer__logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Go to top button */
+        .go-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            display: none;
+        }
+
+        .go-to-top:hover {
+            background-color: var(--secondary-color-dark);
+        }
+    </style>
 </body>
 </html>

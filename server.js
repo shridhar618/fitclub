@@ -80,25 +80,35 @@ const db = new sqlite3.Database(path.join(dbDirectory, 'fitclub.db'), sqlite3.OP
     }
 });
 
-// Session configuration
+// Session middleware configuration
 app.use(session({
     store: new SQLiteStore({
         dir: dbDirectory,
         db: 'sessions.db',
-        table: 'sessions'
+        table: 'sessions',
+        ttl: 24 * 60 * 60 // 24 hours in seconds
     }),
+    name: 'sessionId',
     secret: process.env.SESSION_SECRET || 'your-secret-key',
-    name: 'admin.sid',
     resave: false,
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        sameSite: 'lax'
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
+
+// Session activity middleware
+app.use((req, res, next) => {
+    if (req.session) {
+        req.session.lastActivity = Date.now();
+        req.session.touch();
+    }
+    next();
+});
 
 // Add security headers
 app.use((req, res, next) => {
@@ -107,25 +117,6 @@ app.use((req, res, next) => {
     res.setHeader('X-XSS-Protection', '1; mode=block');
     next();
 });
-
-// Session activity middleware
-/* 
-app.use((req, res, next) => {
-    if (req.session) {
-        if (req.session.lastActivity && 
-            Date.now() - req.session.lastActivity > (30 * 60 * 1000)) {
-            return req.session.destroy(() => {
-                res.status(401).json({ 
-                    error: 'Session expired',
-                    sessionExpired: true 
-                });
-            });
-        }
-        req.session.lastActivity = Date.now();
-    }
-    next();
-});
-*/
 
 // Function to get database connection
 function getDb() {
@@ -148,17 +139,130 @@ const authenticateUser = (req, res, next) => {
 
 // Admin authentication middleware
 const authenticateAdmin = (req, res, next) => {
-    // Always allow access
+    if (!req.session || !req.session.isAdmin) {
+        return res.status(401).json({ 
+            error: 'Not authorized',
+            sessionExpired: true
+        });
+    }
+    
+    // Update last activity
+    req.session.lastActivity = Date.now();
     next();
 };
 
-// Admin page route - should be before other static routes
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+// Admin login endpoint
+app.post('/api/admin/login', async (req, res) => {
+    const { adminId, password } = req.body;
+    
+    if (adminId === process.env.ADMIN_ID && password === process.env.ADMIN_PASSWORD) {
+        try {
+            await new Promise((resolve, reject) => {
+                req.session.regenerate((err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            });
+
+            req.session.isAdmin = true;
+            req.session.adminId = adminId;
+            req.session.lastActivity = Date.now();
+
+            await new Promise((resolve, reject) => {
+                req.session.save((err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            });
+
+            res.json({ 
+                success: true,
+                message: 'Admin login successful'
+            });
+        } catch (error) {
+            console.error('Login error:', error);
+            res.status(500).json({ 
+                success: false,
+                error: 'Internal server error' 
+            });
+        }
+    } else {
+        res.status(401).json({ 
+            success: false,
+            error: 'Invalid credentials' 
+        });
+    }
 });
 
-// Serve static files
-app.use(express.static('public'));
+// Admin check session endpoint
+app.get('/api/admin/check-session', (req, res) => {
+    if (!req.session) {
+        return res.status(401).json({ 
+            isAuthenticated: false,
+            error: 'No session found',
+            sessionExpired: true
+        });
+    }
+
+    if (!req.session.isAdmin) {
+        return res.status(401).json({ 
+            isAuthenticated: false,
+            error: 'Not authorized',
+            sessionExpired: true
+        });
+    }
+
+    // Check if session is expired
+    const now = Date.now();
+    const lastActivity = req.session.lastActivity || 0;
+    const sessionAge = now - lastActivity;
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+    if (sessionAge > maxAge) {
+        req.session.destroy();
+        return res.status(401).json({ 
+            isAuthenticated: false,
+            error: 'Session expired',
+            sessionExpired: true
+        });
+    }
+
+    // Update last activity
+    req.session.lastActivity = now;
+    req.session.touch();
+
+    req.session.save((err) => {
+        if (err) {
+            console.error('Session save error:', err);
+            return res.status(500).json({ 
+                isAuthenticated: false,
+                error: 'Session error'
+            });
+        }
+        res.json({ 
+            isAuthenticated: true,
+            lastActivity: req.session.lastActivity
+        });
+    });
+});
+
+// Admin logout endpoint
+app.post('/api/admin/logout', (req, res) => {
+    if (req.session) {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Logout error:', err);
+                return res.status(500).json({ 
+                    success: false,
+                    error: 'Logout failed'
+                });
+            }
+            res.json({ success: true });
+        });
+    } else {
+        res.json({ success: true });
+    }
+});
 
 // Routes
 app.get('/', (req, res) => {
@@ -583,8 +687,13 @@ app.post('/api/user/profile-image', authenticateUser, upload.single('profileImag
 
 // Dashboard routes
 
+// Admin page route
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 // API route to get all users
-app.get('/api/users', authenticateAdmin, (req, res) => {
+app.get('/api/users', (req, res) => {
     db.all('SELECT id, name, email, created_at FROM users ORDER BY created_at DESC', [], (err, rows) => {
         if (err) {
             res.status(500).json({ error: err.message });
@@ -595,7 +704,7 @@ app.get('/api/users', authenticateAdmin, (req, res) => {
 });
 
 // API route to delete a user
-app.delete('/api/users/:id', authenticateAdmin, (req, res) => {
+app.delete('/api/users/:id', (req, res) => {
     const id = req.params.id;
     db.run('DELETE FROM users WHERE id = ?', id, function(err) {
         if (err) {
@@ -607,7 +716,7 @@ app.delete('/api/users/:id', authenticateAdmin, (req, res) => {
 });
 
 // API route to get user statistics
-app.get('/api/stats', authenticateAdmin, (req, res) => {
+app.get('/api/stats', (req, res) => {
     db.all(`
         SELECT 
             (SELECT COUNT(*) FROM users) as total_users,

@@ -12,7 +12,7 @@
 <body data-theme="dark">
     <nav>
         <div class="nav__logo">
-            <a href="./index.html"><img src="./images/logo.png" alt="logo" /></a>
+            <a href="./index.html">FITCLUB</a>
         </div>
         <ul class="nav__links">
             <li class="link"><a href="#home">Home</a></li>
@@ -41,7 +41,9 @@
             <button onclick="window.location.href='fitness.html'" class="btn">Get Started</button>
         </div>
         <div class="header__image">
-            <img src="./images/header.png" alt="Fitness hero showing a muscular person working out in a modern gym setting" />
+            <div class="placeholder-image">
+                <i class="ri-user-fill"></i>
+            </div>
         </div>
     </header>
 </section>
@@ -86,7 +88,6 @@
     </section>
 
      <!-- Chatbot fixed button -->
-     <!-- From Uiverse.io by Spacious74 --> 
      <div class="container">
         <button onclick="openChatbot()" class="button">Chat-Bot</button>
     </div>
@@ -94,8 +95,9 @@
     <section class="section__container class__container" id="service">
         <div class="class__image">
             <span class="bg__blur"></span>
-            <img src="./images/class-1.jpg" alt="class" class="class__img-1" />
-            <img src="./images/class-2.jpg" alt="class" class="class__img-2" />
+            <div class="placeholder-image">
+                <i class="ri-team-fill"></i>
+            </div>
         </div>
         <div class="class__content">
             <h2 class="section__header">THE CLASS YOU WILL GET HERE</h2>
@@ -113,7 +115,9 @@
             Our diverse membership base creates a friendly and supportive atmosphere, where you can make friends and stay motivated.
         </p>
         <div class="join__image">
-            <img src="./images/join.jpg" alt="Join" />
+            <div class="placeholder-image">
+                <i class="ri-team-line"></i>
+            </div>
             <div class="join__grid">
                 <div class="join__card">
                     <span><i class="ri-user-star-fill"></i></span>
@@ -140,8 +144,6 @@
         </div>
     </section>
 
-    
-
     <section class="review" id="community">
         <div class="section__container review__container">
             <div class="review__content">
@@ -158,7 +160,9 @@
                 </div>
                 <div class="review__footer">
                     <div class="review__member">
-                        <img src="./images/member.jpg" alt="member" />
+                        <div class="placeholder-image small">
+                            <i class="ri-user-fill"></i>
+                        </div>
                         <div class="review__member__details">
                             <h4>Sanith Shetty</h4>
                             <p>Fitclub Client</p>
@@ -173,7 +177,7 @@
         <span class="bg__blur"></span>
         <span class="bg__blur footer__blur"></span>
         <div class="footer__col">
-            <div class="footer__logo"><img src="./images/logo.png" alt="logo" /></div>
+            <div class="footer__logo">FITCLUB</div>
             <p>
                 Take the first step towards a healthier, stronger you with our unbeatable pricing plans. Let's sweat, achieve, and conquer together!
             </p>
@@ -205,7 +209,7 @@
         </div>
     </footer>
     <div class="footer__bar">
-        Copyright © 2025 All rights reserved.
+        Copyright © 2025 Shridhar Bhat. All rights reserved.
     </div>
     <button id="goToTop" class="go-to-top">
         <i class="ri-arrow-up-line"></i>
@@ -230,8 +234,6 @@
                 behavior: 'smooth'
             });
         });
-
-         
 
     // Immediately executing function to handle theme
     (function() {
@@ -282,16 +284,9 @@
         });
     });
 
-    // Debug: Log all localStorage contents
-    console.log('All localStorage contents:', {
-        userData: localStorage.getItem('userData')
-    });
-
-
     function openChatbot() {
-    window.location.href = 'https://flask-chatbot-3-pl35.onrender.com/'; // Replace with the actual URL of your chatbot page
-  }
-
+        window.location.href = 'https://flask-chatbot-3-pl35.onrender.com/';
+    }
     </script>
 </body>
 
@@ -394,6 +389,45 @@
 
     #username {
         color: var(--white);
+    }
+
+    /* Placeholder image styles */
+    .placeholder-image {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary-color-light);
+        border-radius: 10px;
+    }
+
+    .placeholder-image i {
+        font-size: 3rem;
+        color: var(--secondary-color);
+    }
+
+    .placeholder-image.small {
+        width: 50px;
+        height: 50px;
+    }
+
+    .placeholder-image.small i {
+        font-size: 1.5rem;
+    }
+
+    .nav__logo a {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--secondary-color);
+        text-decoration: none;
+    }
+
+    .footer__logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
     }
 </style>
 

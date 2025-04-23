@@ -5,50 +5,325 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitClub - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/login.css">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #e94560;
+            --text-color: #ffffff;
+            --error-color: #ff4444;
+            --success-color: #00C851;
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            flex-direction: column;
+            color: var(--text-color);
+        }
+
+        .navbar {
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            padding-left: 2.5rem;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: #d63d56;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem;
+            }
+
+            .card-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar">
+        <a href="./index.html" class="navbar-brand">FITCLUB</a>
+    </nav>
+
     <div class="container">
-        <div class="login-wrapper">
-            <!-- Logo Section -->
-            <div class="logo">
-                <h1>Fit<span>Club</span></h1>
-                <p>Welcome back to your fitness journey</p>
+        <div class="login-card">
+            <div class="card-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue your fitness journey</p>
             </div>
 
-            <!-- Form Section -->
-            <div class="form-container">
-                <!-- Login Form -->
-                <form id="loginForm" class="login-form">
-                    <h2>Login</h2>
-                    <p class="form-subtitle">Sign in to your account</p>
-                    
-                    <div id="error-message" class="error-message" style="display: none; color: red; margin-bottom: 10px;"></div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" required>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-group">
+                        <i class="ri-mail-line"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <div class="error-message" id="emailError"></div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="password-input">
-                            <input type="password" id="password" required>
-                            <i class="ri-eye-line toggle-password"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Sign In</button>
-                </form>
-
-                <div class="form-footer">
-                    Don't have an account? <a href="./auth/signup.html">Sign Up</a>
                 </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <i class="ri-lock-line"></i>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <span class="password-toggle" id="passwordToggle">
+                            <i class="ri-eye-line"></i>
+                        </span>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Sign In</button>
+                <div class="success-message" id="successMessage"></div>
+            </form>
+
+            <div class="form-footer">
+                Don't have an account?<a href="./auth/signup.html">Sign Up</a>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="./js/login.js"></script>
+    <script>
+        // Password visibility toggle
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordInput = document.getElementById('password');
+
+        passwordToggle.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            passwordToggle.innerHTML = type === 'password' ? 
+                '<i class="ri-eye-line"></i>' : 
+                '<i class="ri-eye-off-line"></i>';
+        });
+
+        // Form validation and submission
+        const loginForm = document.getElementById('loginForm');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const successMessage = document.getElementById('successMessage');
+
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function hideError(element) {
+            element.style.display = 'none';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Reset errors
+            hideError(emailError);
+            hideError(passwordError);
+            hideError(successMessage);
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Basic validation
+            let hasError = false;
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError(emailError, 'Please enter a valid email address');
+                hasError = true;
+            }
+
+            if (!password) {
+                showError(passwordError, 'Password is required');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store user info in localStorage
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1500);
+                } else {
+                    showError(emailError, data.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(emailError, 'An error occurred during login');
+            }
+        });
+
+        // Clear errors on input
+        document.getElementById('email').addEventListener('input', () => hideError(emailError));
+        document.getElementById('password').addEventListener('input', () => hideError(passwordError));
+    </script>
 </body>
 </html>

@@ -4,703 +4,457 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitClub - Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: #f0f4f8;
-            min-height: 100vh;
-            color: #334155;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-            position: relative;
-        }
-
-        /* Navigation Bar */
-        .navbar {
-            background: #4f46e5;
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.2s ease;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-
-        /* Welcome Banner */
-        .welcome-banner {
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            color: white;
-            padding: 2.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .welcome-banner h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .welcome-banner p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
-        /* Profile Section */
-        .profile-section {
-            background: white;
-            border-radius: 12px;
-            padding: 2.5rem;
-            margin-top: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-            margin-bottom: 2.5rem;
-            padding-bottom: 2.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .profile-pic {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            overflow: hidden;
-            background-color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: #94a3b8;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .profile-pic img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-info h1 {
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-
-        .profile-info p {
-            color: #64748b;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Profile Details */
-        .profile-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .detail-card {
-            background: #f8fafc;
-            padding: 1.8rem;
-            border-radius: 10px;
-            border-left: 5px solid #4f46e5;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .detail-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .detail-card h3 {
-            color: #1e293b;
-            margin-bottom: 1.2rem;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .detail-card p {
-            color: #64748b;
-            margin-bottom: 0.8rem;
-            font-size: 1rem;
-        }
-
-        /* Buttons */
-        .btn-primary, .edit-btn, .add-note-btn {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .btn-primary:hover, .edit-btn:hover, .add-note-btn:hover {
-            background: #4338ca;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Logout Button */
-        .logout-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Notes Section */
-        .notes-section {
-            background: white;
-            border-radius: 12px;
-            padding: 2.5rem;
-            margin-top: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .notes-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.8rem;
-        }
-
-        .notes-header h3 {
-            font-size: 1.5rem;
-            color: #1e293b;
-            font-weight: 600;
-        }
-
-        .notes-list {
-            display: grid;
-            gap: 1.2rem;
-        }
-
-        .note-card {
-            background: #f8fafc;
-            padding: 1.8rem;
-            border-radius: 10px;
-            border-left: 5px solid #4f46e5;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .note-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .note-card .date {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 0.8rem;
-        }
-
-        .note-card .delete-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: transform 0.2s ease;
-        }
-
-        .note-card .delete-btn:hover {
-            transform: scale(1.2);
-        }
-
-        /* Add Note Form */
-        .add-note-form {
-            margin-bottom: 2.5rem;
-        }
-
-        .add-note-form textarea {
-            width: 100%;
-            padding: 1.2rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 120px;
-            margin-bottom: 1.2rem;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .add-note-form textarea:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(3px);
-        }
-
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 2.5rem;
-            max-height: 90%;
-            width: 90%;
-            max-width: 550px;
-            border-radius: 12px;
-            position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-        }
-
-        .modal-content h2 {
-            color: #1e293b;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .close {
-            position: absolute;
-            right: 1.5rem;
-            top: 1.5rem;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #64748b;
-            transition: color 0.3s ease;
-        }
-
-        .close:hover {
-            color: #1e293b;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #1e293b;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-
-        .profile-image-upload {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .image-preview-container {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 1.5rem;
-            border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 3px solid #4f46e5;
-        }
-
-        #imagePreview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .upload-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(79, 70, 229, 0.7);
-            padding: 0.8rem;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.3s ease;
-        }
-
-        .upload-overlay:hover {
-            background: rgba(79, 70, 229, 0.9);
-        }
-
-        #profileImage {
-            display: none;
-        }
-
-        .upload-btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: #e2e8f0;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .upload-btn:hover {
-            background: #cbd5e1;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 1.5rem;
-            }
-
-            .nav-content {
-                flex-direction: column;
-                gap: 1.2rem;
-                padding: 1rem 0;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-                width: 100%;
-            }
-
-            .welcome-banner {
-                padding: 1.8rem;
-            }
-
-            .welcome-banner h2 {
-                font-size: 1.6rem;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
-                padding: 1.8rem;
-            }
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
-<body>
-    <nav class="navbar">
-        <div class="nav-content">
-            <div class="logo">FitClub</div>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="#" id="logoutBtn" class="logout-btn">Logout</a>
-            </div>
+<body data-theme="dark">
+    <!-- Navigation -->
+    <nav>
+        <div class="nav__logo">
+            <a href="./index.html">FITCLUB</a>
+        </div>
+        <ul class="nav__links">
+            <li class="link"><a href="index.html">Home</a></li>
+            <li class="link"><a href="fitness.html">Programs</a></li>
+            <li class="link"><a href="dashboard.html">Dashboard</a></li>
+            <li class="link"><a href="#about">About</a></li>
+            <li class="link"><a href="#contact">Chat with Trainer</a></li>
+        </ul>
+        <div class="theme__toggle">
+            <button class="theme-btn" id="themeToggle">
+                <i class="ri-contrast-2-line"></i>
+            </button>
         </div>
     </nav>
 
-    <div class="dashboard-container">
-        <div class="welcome-banner">
-            <h2>Welcome, <span id="welcomeName">${userName}</span>! 👋</h2>
-            <p>Track your fitness goals and stay motivated</p>
-        </div>
-
-        <div class="profile-section">
-            <div class="profile-header">
-                <div class="profile-pic">👤</div>
-                <div class="profile-info">
-                    <h1 id="userName">Loading...</h1>
-                    <p id="userEmail">Loading...</p>
-                </div>
+    <!-- Main Dashboard Container -->
+    <div class="section__container dashboard__container">
+        <!-- Welcome Banner -->
+        <div class="welcome__banner">
+            <div class="welcome__content">
+                <h2>Welcome Back, <span id="welcomeName">User</span>! 👋</h2>
+                <p>Track your fitness journey and achieve your goals</p>
             </div>
-
-            <div class="profile-details">
-                <div class="detail-card">
-                    <h3>Account Information</h3>
-                    <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
-                    <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
-                    <p><strong>Member Since:</strong> <span id="memberSince">Loading...</span></p>
+            <div class="welcome__stats">
+                <div class="stat__item">
+                    <span>14</span>
+                    <p>Workouts</p>
                 </div>
-
-                <div class="detail-card">
-                    <h3>Fitness Goals</h3>
-                    <p>Set your fitness goals and track your progress</p>
-                    <button class="edit-btn" style="margin-top: 1rem;">Update Goals</button>
+                <div class="stat__item">
+                    <span>3.5kg</span>
+                    <p>Progress</p>
+                </div>
+                <div class="stat__item">
+                    <span>85%</span>
+                    <p>Goal</p>
                 </div>
             </div>
         </div>
 
-        <div class="notes-section">
-            <div class="notes-header">
-                <h3>My Fitness Goals & Notes</h3>
+        <!-- Quick Stats Section -->
+        <div class="dashboard__section">
+            <h2 class="section__title">Today's Progress</h2>
+            <div class="stats__grid">
+                <div class="stat__card">
+                    <i class="ri-heart-pulse-line"></i>
+                    <div class="stat__info">
+                        <h3>Heart Rate</h3>
+                        <p>75 BPM</p>
+                    </div>
+                </div>
+                <div class="stat__card">
+                    <i class="ri-footprint-line"></i>
+                    <div class="stat__info">
+                        <h3>Steps</h3>
+                        <p>8,432</p>
+                    </div>
+                </div>
+                <div class="stat__card">
+                    <i class="ri-fire-line"></i>
+                    <div class="stat__info">
+                        <h3>Calories</h3>
+                        <p>420 kcal</p>
+                    </div>
+                </div>
+                <div class="stat__card">
+                    <i class="ri-water-flash-line"></i>
+                    <div class="stat__info">
+                        <h3>Water</h3>
+                        <p>1.2L</p>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="add-note-form">
-                <textarea id="noteInput" placeholder="Write your fitness goal or note here..."></textarea>
-                <button class="add-note-btn" onclick="addNote()">Add Note</button>
+        <!-- Workout Schedule Section -->
+        <div class="dashboard__section">
+            <div class="section__header">
+                <h2 class="section__title">Workout Schedule</h2>
+                <button class="btn btn__outline" onclick="addWorkout()">Add Workout</button>
             </div>
+            <div class="schedule__grid">
+                <div class="schedule__day">
+                    <h4>Mon</h4>
+                    <div class="workout__slot">Upper Body</div>
+                </div>
+                <div class="schedule__day">
+                    <h4>Tue</h4>
+                    <div class="workout__slot">Cardio</div>
+                </div>
+                <div class="schedule__day">
+                    <h4>Wed</h4>
+                    <div class="workout__slot">Rest</div>
+                </div>
+                <div class="schedule__day">
+                    <h4>Thu</h4>
+                    <div class="workout__slot">Lower Body</div>
+                </div>
+                <div class="schedule__day">
+                    <h4>Fri</h4>
+                    <div class="workout__slot">HIIT</div>
+                </div>
+                <div class="schedule__day">
+                    <h4>Sat</h4>
+                    <div class="workout__slot">Yoga</div>
+                </div>
+                <div class="schedule__day">
+                    <h4>Sun</h4>
+                    <div class="workout__slot">Rest</div>
+                </div>
+            </div>
+        </div>
 
-            <div class="notes-list" id="notesList">
+        <!-- Goals Section -->
+        <div class="dashboard__section">
+            <div class="section__header">
+                <h2 class="section__title">Fitness Goals</h2>
+                <button class="btn btn__outline" onclick="addGoal()">Add Goal</button>
+            </div>
+            <div class="goals__grid">
+                <div class="goal__card">
+                    <h3>Weight Loss</h3>
+                    <p>Target: 70kg</p>
+                    <div class="progress__bar">
+                        <div class="progress" style="width: 60%"></div>
+                    </div>
+                    <span class="goal__deadline">2 weeks left</span>
+                </div>
+                <div class="goal__card">
+                    <h3>Running Distance</h3>
+                    <p>Target: 5km</p>
+                    <div class="progress__bar">
+                        <div class="progress" style="width: 80%"></div>
+                    </div>
+                    <span class="goal__deadline">1 week left</span>
+                </div>
+                <div class="goal__card">
+                    <h3>Strength Training</h3>
+                    <p>Target: Bench Press 80kg</p>
+                    <div class="progress__bar">
+                        <div class="progress" style="width: 40%"></div>
+                    </div>
+                    <span class="goal__deadline">1 month left</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="dashboard__section">
+            <div class="section__header">
+                <h2 class="section__title">Fitness Notes</h2>
+            </div>
+            <div class="notes__form">
+                <textarea id="noteInput" placeholder="Write your fitness note here..."></textarea>
+                <button class="btn" onclick="addNote()">Add Note</button>
+            </div>
+            <div class="notes__grid" id="notesList">
                 <!-- Notes will be added here dynamically -->
-            </div>
-        </div>
-        <div id="profileModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeProfileModal()">&times;</span>
-                <h2>Edit Profile</h2>
-                <form id="profileForm" onsubmit="saveProfile(event)">
-                    <div class="form-group profile-image-upload">
-                        <div class="image-preview-container">
-                            <img id="imagePreview" src="./images/profile-placeholder.jpg" alt="Profile Preview">
-                            <div class="upload-overlay">
-                                Change Photo
-                            </div>
-                        </div>
-                        <input type="file" id="profileImage" name="profileImage" accept="image/*" onchange="previewImage(event)">
-                        <label for="profileImage" class="upload-btn">
-                            Upload New Photo
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="userName" placeholder="Name" name="userName" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="userAge" placeholder="Age" name="userAge" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="userWeight" placeholder="Weight (kg)" name="userWeight" step="0.1" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="userHeight" placeholder="Height (cm)" name="userHeight" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea id="userGoals" name="userGoals" placeholder="Fitness Goals" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">Save Changes</button>
-                </form>
             </div>
         </div>
     </div>
 
+    <style>
+        /* Theme colors */
+        :root {
+            --primary-color: #111317;
+            --primary-color-light: #1f2125;
+            --primary-color-extra-light: #35373b;
+            --secondary-color: #f9ac54;
+            --secondary-color-dark: #d79447;
+            --text-light: #d1d5db;
+            --white: #ffffff;
+        }
+
+        [data-theme="light"] {
+            --primary-color: #ffffff;
+            --primary-color-light: #f5f5f5;
+            --primary-color-extra-light: #fafafa;
+            --text-light: #666666;
+            --white: #111317;
+        }
+
+        /* Base styles */
+        body {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        .section__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Banner */
+        .welcome__banner {
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color-dark));
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome__content h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome__stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat__item {
+            text-align: center;
+        }
+
+        .stat__item span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--white);
+        }
+
+        /* Dashboard Sections */
+        .dashboard__section {
+            background-color: var(--primary-color-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section__title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat__card {
+            background-color: var(--primary-color-extra-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat__card i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+
+        /* Schedule Grid */
+        .schedule__grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+        }
+
+        .schedule__day {
+            text-align: center;
+        }
+
+        .workout__slot {
+            background-color: var(--primary-color-extra-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        /* Goals Grid */
+        .goals__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .goal__card {
+            background-color: var(--primary-color-extra-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .progress__bar {
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        .goal__deadline {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Notes Section */
+        .notes__form {
+            margin-bottom: 1.5rem;
+        }
+
+        .notes__form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color-extra-light);
+            color: var(--white);
+            margin-bottom: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .notes__grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color-dark);
+        }
+
+        .btn__outline {
+            background-color: transparent;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .btn__outline:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome__banner {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .welcome__stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            .schedule__grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('Dashboard loading...');
-            try {
-                // Check authentication
-                const authResponse = await fetch('/api/auth/check');
-                if (!authResponse.ok) {
-                    throw new Error('Not authenticated');
-                }
+        // Theme toggle functionality
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
 
-                // Get user profile
-                const profileResponse = await fetch('/api/user/profile');
-                if (!profileResponse.ok) {
-                    throw new Error('Failed to fetch profile');
-                }
-                
-                const userData = await profileResponse.json();
-                loadProfile(userData);
-                await loadNotes();
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
 
-            } catch (error) {
-                console.error('Dashboard error:', error);
-                // window.location.href = '/login.html';
-            }
-        });
+            themeToggle.onclick = function() {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            };
+        })();
 
-        function loadProfile(userData) {
-            // Update welcome message and profile information
-            document.getElementById('welcomeName').textContent = userData.name || 'User';
-            document.getElementById('userName').textContent = userData.name || 'User';
-            document.getElementById('userEmail').textContent = userData.email;
-            document.getElementById('profileName').textContent = userData.name || 'User';
-            document.getElementById('profileEmail').textContent = userData.email;
-            
-            // Format and display member since date
-            const memberDate = userData.created_at 
-                ? new Date(userData.created_at).toLocaleDateString()
-                : new Date().toLocaleDateString();
-            document.getElementById('memberSince').textContent = memberDate;
-
-            // Update profile picture if exists
-            if (userData.profile_picture) {
-                updateProfilePicture(userData.profile_picture);
-            }
-        }
-
-        function updateProfilePicture(imageUrl) {
-            const profilePics = document.querySelectorAll('.profile-pic');
-            profilePics.forEach(pic => {
-                pic.innerHTML = `<img src="${imageUrl}" alt="Profile Picture">`;
-            });
-        }
-
-        function editProfile() {
-            const modal = document.getElementById('profileModal');
-            modal.style.display = 'block';
-        }
-
-        function closeProfileModal() {
-            const modal = document.getElementById('profileModal');
-            modal.style.display = 'none';
-        }
-
-        function previewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function saveProfile(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            try {
-                const response = await fetch('/api/user/profile', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to update profile');
-                }
-
-                const updatedProfile = await response.json();
-                loadProfile(updatedProfile);
-                closeProfileModal();
-                
-                // Show success message
-                alert('Profile updated successfully!');
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                alert('Failed to update profile. Please try again.');
-            }
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('profileModal');
-            if (event.target === modal) {
-                closeProfileModal();
-            }
-        }
-
-        // Existing note functions remain the same
-        async function addNote() {
+        // Add note functionality
+        function addNote() {
             const noteInput = document.getElementById('noteInput');
             const noteText = noteInput.value.trim();
             
             if (!noteText) return;
 
-            try {
-                const response = await fetch('/api/notes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ text: noteText })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to add note');
-                }
-                
-                noteInput.value = '';
-                await loadNotes();
-            } catch (error) {
-                console.error('Error adding note:', error);
-            }
+            const notesList = document.getElementById('notesList');
+            const noteElement = document.createElement('div');
+            noteElement.className = 'goal__card';
+            noteElement.innerHTML = `
+                <p>${noteText}</p>
+                <span class="goal__deadline">${new Date().toLocaleDateString()}</span>
+                <button class="btn btn__outline" onclick="this.parentElement.remove()" style="margin-top: 1rem;">
+                    Delete
+                </button>
+            `;
+            
+            notesList.prepend(noteElement);
+            noteInput.value = '';
         }
 
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', async function() {
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', async function() {
             try {
-                await fetch('/api/auth/logout', { method: 'POST' });
-                window.location.href = 'login.html';
+                // First verify session with server
+                const response = await fetch('/api/auth/check', {
+                    credentials: 'include' // Important for session cookie
+                });
+                
+                if (!response.ok) {
+                    // Session invalid, redirect to login
+                    window.location.href = '/login.html';
+                    return;
+                }
+                
+                // Session is valid, now get user data
+                const userData = JSON.parse(localStorage.getItem('user'));
+                if (userData && userData.name) {
+                    document.getElementById('welcomeName').textContent = userData.name;
+                }
+                
             } catch (error) {
-                console.error('Logout error:', error);
+                console.error('Auth check error:', error);
+                window.location.href = '/login.html';
             }
         });
     </script>

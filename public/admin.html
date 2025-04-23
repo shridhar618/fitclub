@@ -4,48 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-panel {
+            display: block;
+            min-height: 100vh;
+            background: linear-gradient(rgb(25, 24, 24), rgb(53, 52, 52));
+        }
+
+        .admin-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h2 {
+            color: white;
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .stat-card h4 {
+            margin: 0 0 1rem;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .card h3 {
+            margin: 0 0 1.5rem;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .users-table th {
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--gray-500);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .users-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Admin Panel Section -->
-    <div id="adminPanel">
-        <nav class="admin-nav">
-            <h1>Admin Dashboard</h1>
-        </nav>
-        
-        <div class="admin-content">
-            <div class="stats-container">
-                <!-- Your stats content -->
-            </div>
-            
-            <div class="users-container">
-                <h2>Users Management</h2>
-                <div class="table-container">
-                    <table id="usersTable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <!-- User data will be inserted here -->
-                        </tbody>
-                    </table>
+    <!-- Admin Panel -->
+    <div class="admin-panel">
+        <div class="admin-header">
+            <div class="container">
+                <div class="header-content">
+                    <h2><i class="fas fa-dashboard"></i> Admin Dashboard</h2>
                 </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Total Users</h4>
+                    <div class="number" id="totalUsers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>New Users (Today)</h4>
+                    <div class="number" id="newUsers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Active Users</h4>
+                    <div class="number" id="activeUsers">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-users"></i> Registered Users</h3>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Joined Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- User data will be populated here -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
+        // Add loading indicator function
+        function showLoading(show = true) {
+            let loader = document.querySelector('.loading');
+            if (!loader) {
+                loader = document.createElement('div');
+                loader.className = 'loading';
+                loader.innerHTML = 'Loading...';
+                document.body.appendChild(loader);
+            }
+            loader.style.display = show ? 'block' : 'none';
+        }
+
         async function loadUsers() {
             try {
                 const response = await fetch('/api/users', {
                     credentials: 'include'
                 });
-                
                 if (!response.ok) {
                     throw new Error('Failed to fetch users');
                 }
@@ -83,7 +223,7 @@
                 }
             } catch (error) {
                 console.error('Error loading users:', error);
-                alert('Error loading users. Please refresh the page.');
+                alert('Failed to load users');
             }
         }
 
@@ -103,73 +243,82 @@
                     updateStats();
                 } catch (error) {
                     console.error('Error deleting user:', error);
-                    alert('Error deleting user. Please try again.');
+                    alert('Failed to delete user');
                 }
             }
         }
 
-        // Load initial data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            Promise.all([
-                loadUsers(),
-                updateStats()
-            ]).catch(error => {
-                console.error('Error loading initial data:', error);
-                alert('Error loading data. Please refresh the page.');
-            });
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/stats', {
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stats');
+                }
+                
+                const stats = await response.json();
+                
+                document.getElementById('totalUsers').textContent = stats.total_users || 0;
+                document.getElementById('newUsers').textContent = stats.new_users_today || 0;
+                document.getElementById('activeUsers').textContent = stats.active_users || 0;
+            } catch (error) {
+                console.error('Error updating stats:', error);
+                alert('Failed to load statistics');
+            }
+        }
+
+        // Check admin authentication on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/api/admin/check-session', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    // Not authenticated, redirect to admin login
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                
+                // Load initial data
+                showLoading(true);
+                await Promise.all([
+                    loadUsers(),
+                    updateStats()
+                ]);
+                
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = '/admin-login.html';
+            } finally {
+                showLoading(false);
+            }
         });
 
-        // Styles
-        const styles = `
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-            }
-            .admin-nav {
-                background: #333;
-                color: white;
-                padding: 1rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .admin-content {
-                padding: 2rem;
-            }
-            .table-container {
-                overflow-x: auto;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 1rem;
-            }
-            th, td {
-                padding: 0.75rem;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
-            }
-            th {
-                background-color: #f5f5f5;
-            }
-            .delete-btn {
-                background: #ff4444;
-                color: white;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-            .delete-btn:hover {
-                background: #cc0000;
-            }
-        `;
-
-        // Add styles to document
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = styles;
-        document.head.appendChild(styleSheet);
+        // Add logout functionality
+        function addLogoutButton() {
+            const header = document.querySelector('.header-content');
+            const logoutBtn = document.createElement('button');
+            logoutBtn.className = 'btn btn-danger';
+            logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+            logoutBtn.onclick = async () => {
+                try {
+                    const response = await fetch('/api/admin/logout', {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                    
+                    if (response.ok) {
+                        window.location.href = '/admin-login.html';
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
+            };
+            header.appendChild(logoutBtn);
+        }
+        addLogoutButton();
     </script>
 </body>
 </html>

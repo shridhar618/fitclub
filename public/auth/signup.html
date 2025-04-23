@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitClub - Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #e94560;
+            --text-color: #ffffff;
+            --error-color: #ff4444;
+            --success-color: #00C851;
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,80 +24,123 @@
         }
 
         body {
-            background: linear-gradient(120deg, #2ecc71, #27ae60);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            flex-direction: column;
+            color: var(--text-color);
         }
 
-        .signup-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 450px;
+        .navbar {
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
         }
 
-        .logo {
+        .navbar-brand {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .signup-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
             text-align: center;
             margin-bottom: 2rem;
         }
 
-        .logo h1 {
-            font-size: 2.2rem;
-            color: #2ecc71;
+        .card-header h1 {
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
-        .logo span {
-            color: #27ae60;
-        }
-
-        .logo p {
-            color: #666;
+        .card-header p {
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
         }
 
         .form-group {
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group {
             position: relative;
         }
 
-        label {
-            display: block;
-            margin-bottom: 0.7rem;
-            color: #333;
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-
-        input {
+        .input-group input {
             width: 100%;
             padding: 1rem;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            padding-left: 2.5rem;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-color);
             font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        input:focus {
+        .input-group input:focus {
             outline: none;
-            border-color: #2ecc71;
-            box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
         }
 
-        button {
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .submit-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(to right, #2ecc71, #27ae60);
+            background: var(--secondary-color);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -94,217 +148,218 @@
             margin-top: 1rem;
         }
 
-        button:hover {
+        .submit-btn:hover {
+            background: #d63d56;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
         }
 
-        button:active {
+        .submit-btn:active {
             transform: translateY(0);
         }
 
         .form-footer {
             text-align: center;
             margin-top: 2rem;
-            color: #666;
-            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .form-footer a {
-            color: #2ecc71;
+            color: var(--secondary-color);
             text-decoration: none;
-            font-weight: 600;
-            margin-left: 5px;
+            font-weight: 500;
+            margin-left: 0.5rem;
         }
 
         .form-footer a:hover {
-            color: #27ae60;
             text-decoration: underline;
         }
 
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .success-message {
+            color: var(--success-color);
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
         }
 
         @media (max-width: 480px) {
-            .signup-container {
+            .signup-card {
                 padding: 2rem;
             }
 
-            .logo h1 {
-                font-size: 1.8rem;
+            .card-header h1 {
+                font-size: 1.75rem;
             }
-        }
-
-        /* Input icons */
-        .input-container {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-
-        /* Social signup buttons */
-        .social-signup {
-            display: flex;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .social-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .social-btn:hover {
-            border-color: #2ecc71;
-            background: #f8f8f8;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 2rem 0;
-            color: #666;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .divider span {
-            padding: 0 1rem;
-            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="signup-container">
-        <div class="logo">
-            <h1>Fit<span>Club</span></h1>
-            <p>Start your fitness journey today</p>
-        </div>
+    <nav class="navbar">
+        <a href="../index.html" class="navbar-brand">FITCLUB</a>
+    </nav>
 
-        <form id="signupForm">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <div class="input-container">
-                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-                    <span class="input-icon">👤</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <div class="input-container">
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                    <span class="input-icon">✉️</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-container">
-                    <input type="password" id="password" name="password" placeholder="Create a password" required>
-                    <span class="input-icon">🔒</span>
-                </div>
+    <div class="container">
+        <div class="signup-card">
+            <div class="card-header">
+                <h1>Create Account</h1>
+                <p>Join FitClub and start your fitness journey</p>
             </div>
 
-            <button type="submit">Create Account</button>
-            
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <div class="input-group">
+                        <i class="ri-user-line"></i>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                        <div class="error-message" id="nameError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-group">
+                        <i class="ri-mail-line"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <i class="ri-lock-line"></i>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <span class="password-toggle" id="passwordToggle">
+                            <i class="ri-eye-line"></i>
+                        </span>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Sign Up</button>
+                <div class="success-message" id="successMessage"></div>
+            </form>
+
             <div class="form-footer">
-                Already have an account? <a href="../login.html">Sign In</a>
+                Already have an account?<a href="../login.html">Sign In</a>
             </div>
-        </form>
+        </div>
     </div>
 
     <script>
-    document.getElementById('signupForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+        // Password visibility toggle
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordInput = document.getElementById('password');
 
-        const formData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        };
+        passwordToggle.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            passwordToggle.innerHTML = type === 'password' ? 
+                '<i class="ri-eye-line"></i>' : 
+                '<i class="ri-eye-off-line"></i>';
+        });
 
-        try {
-            const response = await fetch('/api/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+        // Form validation and submission
+        const signupForm = document.getElementById('signupForm');
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const successMessage = document.getElementById('successMessage');
 
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                alert(data.message);
-                window.location.href = data.redirect;
-            } else {
-                alert(data.message);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred during signup');
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
         }
 
-        
-            document.getElementById('signupForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const userData = {
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    // Add other fields as needed
-                };
-        
-                // Register the user
-                registerUser(userData);
-        
-                // Clear the form
-                this.reset();
-                
-                // Show success message
-                alert('Registration successful!');
-            });
-        
-            function registerUser(userData) {
-                const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-                
-                const newUser = {
-                    ...userData,
-                    created_at: new Date().toISOString()
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('registeredUsers', JSON.stringify(users));
+        function hideError(element) {
+            element.style.display = 'none';
+        }
+
+        function validatePassword(password) {
+            const minLength = 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            if (password.length < minLength) {
+                return 'Password must be at least 8 characters long';
             }
-    });
+            if (!hasUpperCase || !hasLowerCase) {
+                return 'Password must contain both uppercase and lowercase letters';
+            }
+            if (!hasNumbers) {
+                return 'Password must contain at least one number';
+            }
+            if (!hasSpecialChar) {
+                return 'Password must contain at least one special character';
+            }
+            return '';
+        }
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Reset errors
+            hideError(nameError);
+            hideError(emailError);
+            hideError(passwordError);
+            hideError(successMessage);
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Validation
+            let hasError = false;
+
+            if (name.length < 2) {
+                showError(nameError, 'Name must be at least 2 characters long');
+                hasError = true;
+            }
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError(emailError, 'Please enter a valid email address');
+                hasError = true;
+            }
+
+            const passwordValidationError = validatePassword(password);
+            if (passwordValidationError) {
+                showError(passwordError, passwordValidationError);
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    successMessage.textContent = 'Registration successful! Redirecting to login...';
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 2000);
+                } else {
+                    showError(emailError, data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError(emailError, 'An error occurred during registration');
+            }
+        });
+
+        // Clear errors on input
+        document.getElementById('name').addEventListener('input', () => hideError(nameError));
+        document.getElementById('email').addEventListener('input', () => hideError(emailError));
+        document.getElementById('password').addEventListener('input', () => hideError(passwordError));
     </script>
 </body>
 </html>

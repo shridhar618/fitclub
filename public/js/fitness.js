@@ -824,7 +824,7 @@ function updateProgress(newData) {
 
 
 function openChatbot() {
-    window.location.href = 'https://flask-chatbot-3-pl35.onrender.com/'; // Replace with the actual URL of your chatbot page
+    window.location.href = 'https://chatgpt.com/'; // Replace with the actual URL of your chatbot page
   }
 
 
