@@ -216,7 +216,7 @@ app.get('/api/admin/check-session', (req, res) => {
     const now = Date.now();
     const lastActivity = req.session.lastActivity || 0;
     const sessionAge = now - lastActivity;
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hoursde 
 
     if (sessionAge > maxAge) {
         req.session.destroy();
@@ -721,7 +721,7 @@ app.get('/api/stats', (req, res) => {
         SELECT 
             (SELECT COUNT(*) FROM users) as total_users,
             (SELECT COUNT(*) FROM users WHERE DATE(created_at) = DATE('now')) as new_users_today,
-            (SELECT COUNT(*) FROM users WHERE last_login >= datetime('now', '-1 day')) as active_users
+            (SELECT COUNT(*) FROM users WHERE DATE(created_at) >= DATE('now', '-7 days')) as active_users
     `, [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });

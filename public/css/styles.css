@@ -429,14 +429,23 @@ nav {
     color: var(--text-light);
 }
 
-.price__grid {
+
+
+.pricing__grid {
+    border-radius: 5px;
+    padding: 20px 25px;
+    align-items: center;
+    justify-content: space-between;
     margin-top: 4rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background-color: rgb(226, 224, 226);
 }
 
-.price__card {
+.pricing__card {
+    min-height: 300px;
     padding: 2rem;
     background-color: var(--primary-color-light);
     border-radius: 20px;
