@@ -137,133 +137,6 @@ const authenticateUser = (req, res, next) => {
     });
 };
 
-// Admin authentication middleware
-const authenticateAdmin = (req, res, next) => {
-    if (!req.session || !req.session.isAdmin) {
-        return res.status(401).json({ 
-            error: 'Not authorized',
-            sessionExpired: true
-        });
-    }
-    
-    // Update last activity
-    req.session.lastActivity = Date.now();
-    next();
-};
-
-// Admin login endpoint
-app.post('/api/admin/login', async (req, res) => {
-    const { adminId, password } = req.body;
-    
-    if (adminId === process.env.ADMIN_ID && password === process.env.ADMIN_PASSWORD) {
-        try {
-            await new Promise((resolve, reject) => {
-                req.session.regenerate((err) => {
-                    if (err) reject(err);
-                    else resolve();
-                });
-            });
-
-            req.session.isAdmin = true;
-            req.session.adminId = adminId;
-            req.session.lastActivity = Date.now();
-
-            await new Promise((resolve, reject) => {
-                req.session.save((err) => {
-                    if (err) reject(err);
-                    else resolve();
-                });
-            });
-
-            res.json({ 
-                success: true,
-                message: 'Admin login successful'
-            });
-        } catch (error) {
-            console.error('Login error:', error);
-            res.status(500).json({ 
-                success: false,
-                error: 'Internal server error' 
-            });
-        }
-    } else {
-        res.status(401).json({ 
-            success: false,
-            error: 'Invalid credentials' 
-        });
-    }
-});
-
-// Admin check session endpoint
-app.get('/api/admin/check-session', (req, res) => {
-    if (!req.session) {
-        return res.status(401).json({ 
-            isAuthenticated: false,
-            error: 'No session found',
-            sessionExpired: true
-        });
-    }
-
-    if (!req.session.isAdmin) {
-        return res.status(401).json({ 
-            isAuthenticated: false,
-            error: 'Not authorized',
-            sessionExpired: true
-        });
-    }
-
-    // Check if session is expired
-    const now = Date.now();
-    const lastActivity = req.session.lastActivity || 0;
-    const sessionAge = now - lastActivity;
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hoursde 
-
-    if (sessionAge > maxAge) {
-        req.session.destroy();
-        return res.status(401).json({ 
-            isAuthenticated: false,
-            error: 'Session expired',
-            sessionExpired: true
-        });
-    }
-
-    // Update last activity
-    req.session.lastActivity = now;
-    req.session.touch();
-
-    req.session.save((err) => {
-        if (err) {
-            console.error('Session save error:', err);
-            return res.status(500).json({ 
-                isAuthenticated: false,
-                error: 'Session error'
-            });
-        }
-        res.json({ 
-            isAuthenticated: true,
-            lastActivity: req.session.lastActivity
-        });
-    });
-});
-
-// Admin logout endpoint
-app.post('/api/admin/logout', (req, res) => {
-    if (req.session) {
-        req.session.destroy((err) => {
-            if (err) {
-                console.error('Logout error:', err);
-                return res.status(500).json({ 
-                    success: false,
-                    error: 'Logout failed'
-                });
-            }
-            res.json({ success: true });
-        });
-    } else {
-        res.json({ success: true });
-    }
-});
-
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -688,7 +561,7 @@ app.post('/api/user/profile-image', authenticateUser, upload.single('profileImag
 // Dashboard routes
 
 // Admin page route
-app.get('/admin', (req, res) => {
+app.get('/admin', authenticateUser, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
