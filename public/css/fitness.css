@@ -265,7 +265,7 @@ body {
 .hero-image img {
     width: 100%;
     height: auto;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -924,6 +924,8 @@ body {
     transition: opacity 0.3s ease;
 }
 
+
+
 .upload-overlay i {
     color: white;
     font-size: 1.5rem;
@@ -1074,7 +1076,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #007bff;
+    background-color: hsl(211, 100%, 50%);
     color: white;
 }
 button:hover {
@@ -1154,8 +1156,8 @@ button {
     background: linear-gradient(90deg, #03a9f4, #f441a5);
     border-radius: 0.9em;
     transition: all 0.4s ease;
-    top:500px;
-    left: 1100px;
+    margin-top:700px;
+    left: 1400px;
     z-index: 1;
     opacity: 0.5;
   }
