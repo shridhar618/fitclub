@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - FitClub</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: var(--white);
+            padding: 4rem 0 2rem 0;
+            text-align: center;
+        }
+        .about-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .about-section {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: var(--primary-color-light);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+        }
+        .about-section h2 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        .about-team {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .team-member {
+            background: var(--primary-color-extra-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            width: 220px;
+        }
+        .team-member img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+        .team-member h4 {
+            margin: 0.5rem 0 0.2rem 0;
+            color: var(--secondary-color);
+        }
+        .about-values {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .value-card {
+            background: var(--primary-color-extra-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            width: 220px;
+        }
+        .value-card i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        @media (max-width: 700px) {
+            .about-team, .about-values {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <nav>
+        <div class="nav__logo">
+            <a href="./index.html">FITCLUB</a>
+        </div>
+        <ul class="nav__links">
+            <li class="link"><a href="index.html">Home</a></li>
+            <li class="link"><a href="fitness.html">Program</a></li>
+            <li class="link"><a href="dashboard.html">Dashboard</a></li>
+            <li class="link"><a href="about.html">About</a></li>
+            <li class="link"><a href="#contact">Chat with Trainer</a></li>
+        </ul>
+        <div class="theme__toggle">
+            <button class="theme-btn" id="themeToggle">
+                <i class="ri-contrast-2-line"></i>
+            </button>
+        </div>
+    </nav>
+    <section class="about-hero">
+        <h1>About FitClub</h1>
+        <p>Your journey to a healthier, stronger, and happier life starts here.</p>
+    </section>
+    <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>At FitClub, our mission is to empower individuals to achieve their fitness goals through expert guidance, innovative programs, and a supportive community. We believe fitness is not just about physical strength, but also about mental well-being and personal growth.</p>
+    </section>
+    <section class="about-section">
+        <h2>Meet Our Trainers</h2>
+        <div class="about-team">
+            <div class="team-member">
+                <img src="images/member.jpg" alt="Trainer 1">
+                <h4>Alex Johnson</h4>
+                <p>Strength & Conditioning Coach</p>
+            </div>
+            <div class="team-member">
+                <img src="images/class-1.jpg" alt="Trainer 2">
+                <h4>Priya Sharma</h4>
+                <p>Yoga & Flexibility Expert</p>
+            </div>
+            <div class="team-member">
+                <img src="images/class-2.jpg" alt="Trainer 3">
+                <h4>Michael Lee</h4>
+                <p>Cardio & Weight Loss Specialist</p>
+            </div>
+        </div>
+    </section>
+    <section class="about-section">
+        <h2>Our Values</h2>
+        <div class="about-values">
+            <div class="value-card">
+                <i class="ri-team-line"></i>
+                <h4>Community</h4>
+                <p>We foster a welcoming and inclusive environment for everyone.</p>
+            </div>
+            <div class="value-card">
+                <i class="ri-heart-pulse-fill"></i>
+                <h4>Wellness</h4>
+                <p>We promote holistic health—mind, body, and spirit.</p>
+            </div>
+            <div class="value-card">
+                <i class="ri-star-smile-line"></i>
+                <h4>Excellence</h4>
+                <p>We strive for the highest standards in training and support.</p>
+            </div>
+        </div>
+    </section>
+    <section class="about-section">
+        <h2>Contact Us</h2>
+        <p>Have questions or want to join? Email us at <a href="mailto:info@fitclub.com">info@fitclub.com</a> or visit our club for a free consultation!</p>
+    </section>
+    <footer class="section__container footer__container">
+        <span class="bg__blur"></span>
+        <span class="bg__blur footer__blur"></span>
+        <div class="footer__col">
+            <div class="footer__logo">FITCLUB</div>
+            <p>
+                Take the first step towards a healthier, stronger you with our unbeatable pricing plans. Let's sweat, achieve, and conquer together!
+            </p>
+            <div class="footer__socials">
+                <a href="#"><i class="ri-facebook-fill"></i></a>
+                <a href="#"><i class="ri-instagram-line"></i></a>
+                <a href="#"><i class="ri-twitter-fill"></i></a>
+            </div>
+        </div>
+        <div class="footer__col">
+            <h4>Company</h4>
+            <a href="#">Business</a>
+            <a href="#">Franchise</a>
+            <a href="#">Partnership</a>
+            <a href="#">Network</a>
+        </div>
+        <div class="footer__col">
+            <h4>About Us</h4>
+            <a href="#">Blogs</a>
+            <a href="#">Security</a>
+            <a href="#">Careers</a>
+        </div>
+        <div class="footer__col">
+            <h4>Contact</h4>
+            <a href="#">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">BMI Calculator</a>
+        </div>
+    </footer>
+    <div class="footer__bar">
+        Copyright © 2025 Shridhar Bhat. All rights reserved.
+    </div>
+    <script>
+        // Theme toggle functionality
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
+            themeToggle.onclick = function() {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            };
+        })();
+    </script>
+</body>
+</html> 
