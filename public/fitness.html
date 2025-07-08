@@ -422,6 +422,19 @@
             --text-light: #d1d5db;
             --white: #ffffff;
             background-color: var(--primary-color);
+            color: var(--white); /* Add this line */
+        }
+
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] h4,
+        [data-theme="dark"] h5,
+        [data-theme="dark"] h6,
+        [data-theme="dark"] p,
+        [data-theme="dark"] a,
+        [data-theme="dark"] li {
+            color: var(--white); /* Ensures all text is white in dark mode */
         }
 
         /* Hero section styles */
