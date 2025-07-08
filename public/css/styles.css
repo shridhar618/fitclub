@@ -579,6 +579,12 @@ nav {
     grid-template-columns: 400px repeat(3, 1fr);
     gap: 2rem;
     width: 100%;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background-color: var(--primary-color-light);
 }
 
 .footer__blur {
