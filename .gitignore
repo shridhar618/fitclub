@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local databases (created automatically at startup)
+*.db
+*.sqlite
+
+# OS / editor
+.DS_Store
